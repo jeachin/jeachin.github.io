@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>docker系列-docker远程访问 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="docker配置远程访问Docker Daemon 默认情况下是只允许本地访问的，不允许远程访问。本文将首先介绍 Docker Daemon 的连接方式，然后说明如何配置远程访问。即实现通过本地 docker 客户端访问远程主机的 docker 服务端，以此来监控远程主机上的 Docker 容器。 如何配置:有两种方式： 第一种（推荐）是使用 systemctl edit docker 来调用文本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker系列-docker远程访问">
+<meta property="og:url" content="https://mrxccc.github.io/posts/186d0ab9.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="docker配置远程访问Docker Daemon 默认情况下是只允许本地访问的，不允许远程访问。本文将首先介绍 Docker Daemon 的连接方式，然后说明如何配置远程访问。即实现通过本地 docker 客户端访问远程主机的 docker 服务端，以此来监控远程主机上的 Docker 容器。 如何配置:有两种方式： 第一种（推荐）是使用 systemctl edit docker 来调用文本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-23T09:31:44.000Z">
+<meta property="article:modified_time" content="2024-12-04T09:00:22.618Z">
+<meta property="article:author" content="mrxccc">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Docker系列-docker远程访问" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/186d0ab9.html" class="article-date">
+  <time class="dt-published" datetime="2020-10-23T09:31:44.000Z" itemprop="datePublished">2020-10-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/docker/">docker</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      docker系列-docker远程访问
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="docker配置远程访问"><a href="#docker配置远程访问" class="headerlink" title="docker配置远程访问"></a>docker配置远程访问</h1><p>Docker Daemon 默认情况下是只允许本地访问的，不允许远程访问。本文将首先介绍 Docker Daemon 的连接方式，然后说明如何配置远程访问。即实现通过本地 docker 客户端访问远程主机的 docker 服务端，以此来监控远程主机上的 Docker 容器。</p>
+<h2 id="如何配置"><a href="#如何配置" class="headerlink" title="如何配置:"></a>如何配置:</h2><p>有两种方式：</p>
+<h3 id="第一种（推荐）"><a href="#第一种（推荐）" class="headerlink" title="第一种（推荐）"></a>第一种（推荐）</h3><p>是使用 <code>systemctl edit docker</code> 来调用文本编辑器修改指定的单元或单元实例，ubuntu 默认调用的是 nano 编辑器，不是很好用，如果不熟悉 nano 编辑器的操作可以使用 vim 编辑器。</p>
+<p>主要也就是新建或修改 <code>/etc/systemd/system/docker.service.d/override.conf</code>，其内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">##Add this to the file for the docker daemon to use different ExecStart parameters (more things can be added here)</span><br><span class="line">[Service]</span><br><span class="line">ExecStart=</span><br><span class="line">ExecStart=/usr/bin/dockerd</span><br></pre></td></tr></table></figure>
+
+<p>解释一下：</p>
+<blockquote>
+<p>默认情况下使用 systemd 时，docker.service 的设置为：<code>ExecStart=/usr/bin/dockerd -H fd://</code>，这将覆盖写到 daemon.json 中的任何 hosts 。通过在 override.conf 文件中将 ExecStart 仅仅定义为：<code>ExecStart=/usr/bin/dockerd</code>，这将会使用在 daemon.json 中设置的 hosts 。这个文件中的第一行<code>ExecStart=</code> 必须要有，因为它将用于清除默认的 ExecStart 参数。如果是修改 docker.service 的文件而不是创建 override.conf，那么下次 systemd 重启时，docker.service 文件也会被重新创建。</p>
+</blockquote>
+<p>然后在 <code>/etc/docker/daemon.json</code> （没有就新建一个，下文统一简称 daemon.json）中写入以下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;hosts&quot;:[</span><br><span class="line">    &quot;unix:///var/run/docker.sock&quot;,</span><br><span class="line">    &quot;tcp://0.0.0.0:2375&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>该文件必须符合 json 规范写法，否则 Docker 将不能启动</p>
+</blockquote>
+<p>重新加载 daemon 并重启 docker 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line">$ <span class="built_in">sudo</span> systemctl restart docker.service</span><br></pre></td></tr></table></figure>
+
+<p>检查端口监听：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">sudo</span> netstat -ntlp |grep dockerd</span><br><span class="line">tcp6       0      0 :::2375                 :::*                    LISTEN      2439/dockerd</span><br></pre></td></tr></table></figure>
+
+<p>在远程主机上面通过 tcp socket 来访问本机的 Docker Daemon 服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker -H  192.168.205.10:2375 images</span><br><span class="line"></span><br><span class="line">$ docker -H  192.168.205.10:2375 ps</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>其中 192.168.1.130 是开放了远程访问的主机的 IP。</p>
+</blockquote>
+<h3 id="第二种"><a href="#第二种" class="headerlink" title="第二种"></a>第二种</h3><p>这种就很简单暴力，直接修改<code>/lib/systemd/system/docker.service</code>文件，注释掉默认的 ExecStart 并添加新的 ExecStart 配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ExecStart=/usr/bin/dockerd -H fd://</span><br><span class="line">ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock</span><br></pre></td></tr></table></figure>
+
+<p>然后重启 docker.service：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl daemon-reload</span><br><span class="line">$ sudo systemctl restart docker.service</span><br></pre></td></tr></table></figure>
+
+<p>这样 dockerd 就开始监听 tcp 端口 2375 了</p>
+<h1 id="Docker-与-Dockerd-的交互"><a href="#Docker-与-Dockerd-的交互" class="headerlink" title="Docker 与 Dockerd 的交互"></a>Docker 与 Dockerd 的交互</h1><p>Docker 客户端与 dockerd 之间就是通过 REST 的方式通信的。前面我们已经让 dockerd 监听 tcp 端口了，所以我们可以使用 curl 来代替 docker 客户端。这里我们简单的演示如何请求 dockerd 从 docker hub 上下载 hello-world 镜像：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl &#x27;127.0.0.1:2375/images/create?fromImage=hello-world&amp;tag=latest&#x27; -X POST</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;status&quot;:&quot;Pulling from library/hello-world&quot;,&quot;id&quot;:&quot;latest&quot;&#125;</span><br><span class="line">&#123;&quot;status&quot;:&quot;Digest: sha256:8c5aeeb6a5f3ba4883347d3747a7249f491766ca1caa47e5da5dfcf6b9b717c0&quot;&#125;</span><br><span class="line">&#123;&quot;status&quot;:&quot;Status: Image is up to date for hello-world:latest&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果去看看 Engine API，你会发现其它的请求也都是用类似方式发送的，更多API可以参考官方文档，目前最新的版本是v1.40：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/api/v1.40/">https://docs.docker.com/engine/api/v1.40/</a></p>
+<p>更多精彩内容：<a href="https://mrxccc.github.io/">mrxccc</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/186d0ab9.html" data-id="cm49opoou000n8ou4c43c7bwj" data-title="docker系列-docker远程访问" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/66a907b1.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Gitlab-CICD最简单明了的入门教程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/4d3646a8.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">docker系列-docker.sock探究</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

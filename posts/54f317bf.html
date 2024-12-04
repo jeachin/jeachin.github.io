@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>以太网络 - 油价和油量 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="以太网络是区块链2.0，建立了区块链生态。很多token，也只是以太网络的应用（智能合约）。以太网络进行交易的时候，除了设置对方地址，传输token的类型（以太就是ETH）和数量外，还需要设置油费。油费就是以太网络交易的手续费，这些油费被把交易打包的以太矿工获得。 油费的计算公式：油费 &#x3D; 油价 * 油量。 1）油价 介绍油价之前，先介绍一下以太网络中的计量单位： wei - 以太最小的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以太网络 - 油价和油量">
+<meta property="og:url" content="https://mrxccc.github.io/posts/54f317bf.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="以太网络是区块链2.0，建立了区块链生态。很多token，也只是以太网络的应用（智能合约）。以太网络进行交易的时候，除了设置对方地址，传输token的类型（以太就是ETH）和数量外，还需要设置油费。油费就是以太网络交易的手续费，这些油费被把交易打包的以太矿工获得。 油费的计算公式：油费 &#x3D; 油价 * 油量。 1）油价 介绍油价之前，先介绍一下以太网络中的计量单位： wei - 以太最小的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrxccc.github.io/img/54f317bf-1.jpg">
+<meta property="og:image" content="https://mrxccc.github.io/img/54f317bf-2.jpg">
+<meta property="og:image" content="https://mrxccc.github.io/img/54f317bf-3.jpg">
+<meta property="og:image" content="https://mrxccc.github.io/img/54f317bf-4.jpg">
+<meta property="article:published_time" content="2022-01-12T07:54:42.000Z">
+<meta property="article:modified_time" content="2024-12-04T09:00:22.694Z">
+<meta property="article:author" content="mrxccc">
+<meta property="article:tag" content="区块链">
+<meta property="article:tag" content="转载">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrxccc.github.io/img/54f317bf-1.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-以太网络-油价和油量" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/54f317bf.html" class="article-date">
+  <time class="dt-published" datetime="2022-01-12T07:54:42.000Z" itemprop="datePublished">2022-01-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      以太网络 - 油价和油量
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>以太网络是区块链2.0，建立了区块链生态。很多token，也只是以太网络的应用（智能合约）。以太网络进行交易的时候，除了设置对方地址，传输token的类型（以太就是ETH）和数量外，还需要设置油费。油费就是以太网络交易的手续费，这些油费被把交易打包的以太矿工获得。</p>
+<p>油费的计算公式：油费 &#x3D; 油价 * 油量。</p>
+<p><strong>1）油价</strong></p>
+<p>介绍油价之前，先介绍一下以太网络中的计量单位：</p>
+<p><strong>wei - 以太最小的计量单位</strong></p>
+<p>Kwei - 1e3 wei</p>
+<p>Mwei - 1e6 wei</p>
+<p><strong>Gwei - 1e9 wei</strong></p>
+<p>microether - 1e12 wei</p>
+<p>milliether - 1e15 wei</p>
+<p><strong>ether - 1e18 wei</strong></p>
+<p>矿工在打包交易的时候，会优先挑选油价高的交易。也就是说，设置高油价的交易可能会尽快被矿工接受，被打包进区块。很简单的道理，以太网络拥堵的时候，越高的油价，越容易，越快被打包。</p>
+<p><strong>2）油量</strong></p>
+<p>油量取决于以太应用的复杂程序。众所周知，以太程序是运行在以太虚拟机（EVM）上的。以太定义了跑在EVM上的每个指令耗费的油量。也就是说，程序一旦确定，相应的虚拟机上的指令也就确定，运行这段程序的油量也就确定。**如果设置的油量超过程序运行需要的油量，多余的油量会退回。如果设置的油量不够程序运行结束，以太会报告 - Out of gas（油量不够）的错误。注意的是：油量不够的情况下，首先交易没有完成，其次耗费的油费也浪费了。<br>**</p>
+<p><strong>3）油费</strong></p>
+<p>举个例子，如果油价是20 gwei，油量是10000的话，油费是：</p>
+<p>   20<em>1e9</em>10000&#x2F;1e18 &#x3D; 0.0002 ether</p>
+<p>理解了油价和油量的概念，很容易发现，一次交易，要想又快又便宜的完成，寻找合适的油价（油量是和程序相关固定的，油量可以设置的大一些）</p>
+<p><strong>4）如何寻找当前合适的油价？</strong></p>
+<p>因为以太是个开发的生态，任何人可以查看以太当前的交易记录。所以，可以通过查看以太当前交易使用的油价来估算自己交易需要的油价。推荐etherscan.io查看交易情况。</p>
+<p><img src="/img/54f317bf-1.jpg" alt="54f317bf-1.jpg"></p>
+<p>点击最近的交易记录，可以查看详细的交易信息：</p>
+<p><img src="/img/54f317bf-2.jpg" alt="54f317bf-2.jpg"></p>
+<p>以上的示例交易中，油价是8 gwei。可以知道，目前交易使用油价8 gwei就可以。你可以多看几个交易确定油价。想尽快的交易，就在目前平均水平上加点油价。不要求速度，甚至可以在目前油价基础上减去一些。看历史的交易记录，你会发现还有好些交易是用1gwei的油价的。</p>
+<p><strong>5）imToken应用油价和油量的设置</strong></p>
+<p>imToken应用在转帐的默认界面，可以设置油量（拖动油量的进度框）。</p>
+<p><img src="/img/54f317bf-3.jpg" alt="54f317bf-3.jpg"></p>
+<p>在默认情况下，需要注意的是：</p>
+<p>1）油价是程序固定的（这个固定的油价有可能太高（浪费），有可能太低（无法及时被矿工处理）。</p>
+<p>2）油量即使拉到最大也有可能还是不够。特别是对于一些复杂的智能合约，油量需要300000的。</p>
+<p>对于理解了油价和油量的小伙伴，可以直接使用高级选项，自己轻松设置。</p>
+<p><img src="/img/54f317bf-4.jpg" alt="54f317bf-4.jpg"></p>
+<p>所谓的高级设置，也就是两个选项，一个设置油价（以gwei为单位），一个设置油量。非常简单。上图中就是设置油价是8 gwei，油量是300000。</p>
+<p>转载：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/khRgVcjioPNeD3DO1xV2TA">https://mp.weixin.qq.com/s/khRgVcjioPNeD3DO1xV2TA</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/54f317bf.html" data-id="cm49opopo002r8ou44ld62kyp" data-title="以太网络 - 油价和油量" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/c0cda934.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Java表格处理-两个excel之间的数据拷贝
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/73c3e7b2.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Compound vs Aave</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

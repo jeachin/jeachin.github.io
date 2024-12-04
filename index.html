@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="小C的博客">
+<meta property="og:url" content="https://mrxccc.github.io/index.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="mrxccc">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-设计模式-拦截过滤器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/f73eb048.html" class="article-date">
+  <time class="dt-published" datetime="2022-09-30T07:04:54.000Z" itemprop="datePublished">2022-09-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h2><p>在以下情况下使用拦截过滤器模式</p>
+<ul>
+<li>系统使用预处理或后处理请求</li>
+<li>系统应该对请求进行身份验证&#x2F;授权&#x2F;记录或跟踪，然后将请求传递给相应的处理程序</li>
+<li>需要一种模块化方法来配置预处理和后处理方案</li>
+</ul>
+<p>以下是此类设计模式的实体。</p>
+<ul>
+<li><strong>过滤器</strong>- 过滤器将在请求处理程序执行请求之前或之后执行某些任务。</li>
+<li><strong>过滤器链</strong>- 过滤器链带有多个过滤器，并帮助在目标上按定义的顺序执行它们。</li>
+<li><strong>Target</strong> - 目标对象是请求处理程序</li>
+<li><strong>过滤器管理器</strong>- 过滤器管理器管理过滤器和过滤器链。</li>
+<li><strong>Client</strong> - Client 是向 Target 对象发送请求的对象。</li>
+</ul>
+<h2 id="步骤1"><a href="#步骤1" class="headerlink" title="步骤1"></a>步骤1</h2><p>创建过滤器界面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Filter</span> &#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(String request)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第2步"><a href="#第2步" class="headerlink" title="第2步"></a>第2步</h2><p>创建认证过滤器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AuthenticationFilter</span> <span class="keyword">implements</span> <span class="title class_">Filter</span> &#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(String request)</span>&#123;</span><br><span class="line">      System.out.println(<span class="string">&quot;Authenticating request: &quot;</span> + request);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>*debug过滤器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DebugFilter</span> <span class="keyword">implements</span> <span class="title class_">Filter</span> &#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(String request)</span>&#123;</span><br><span class="line">      System.out.println(<span class="string">&quot;request log: &quot;</span> + request);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第-3-步"><a href="#第-3-步" class="headerlink" title="第 3 步"></a>第 3 步</h2><p>关于target，可以传递自己想要执行的某一业务方法，或者上下文都可以</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Target</span> &#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(String request)</span>&#123;</span><br><span class="line">      System.out.println(<span class="string">&quot;Executing request: &quot;</span> + request);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第4步"><a href="#第4步" class="headerlink" title="第4步"></a>第4步</h2><p>创建过滤器链</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FilterChain</span> &#123;</span><br><span class="line">   <span class="keyword">private</span> List&lt;Filter&gt; filters = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Filter&gt;();</span><br><span class="line">   <span class="keyword">private</span> Target target;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addFilter</span><span class="params">(Filter filter)</span>&#123;</span><br><span class="line">      filters.add(filter);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(String request)</span>&#123;</span><br><span class="line">      <span class="keyword">for</span> (Filter filter : filters) &#123;</span><br><span class="line">         filter.execute(request);</span><br><span class="line">      &#125;</span><br><span class="line">      target.execute(request);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setTarget</span><span class="params">(Target target)</span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.target = target;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第-5-步"><a href="#第-5-步" class="headerlink" title="第 5 步"></a>第 5 步</h2><p>创建过滤器管理器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FilterManager</span> &#123;</span><br><span class="line">   FilterChain filterChain;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="title function_">FilterManager</span><span class="params">(Target target)</span>&#123;</span><br><span class="line">      filterChain = <span class="keyword">new</span> <span class="title class_">FilterChain</span>();</span><br><span class="line">      filterChain.setTarget(target);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setFilter</span><span class="params">(Filter filter)</span>&#123;</span><br><span class="line">      filterChain.addFilter(filter);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">filterRequest</span><span class="params">(String request)</span>&#123;</span><br><span class="line">      filterChain.execute(request);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第-6-步"><a href="#第-6-步" class="headerlink" title="第 6 步"></a>第 6 步</h2><p>创建客户端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">   FilterManager filterManager;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setFilterManager</span><span class="params">(FilterManager filterManager)</span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.filterManager = filterManager;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendRequest</span><span class="params">(String request)</span>&#123;</span><br><span class="line">      filterManager.filterRequest(request);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第-7-步"><a href="#第-7-步" class="headerlink" title="第 7 步"></a>第 7 步</h2><p>使用<em>客户端</em>演示拦截过滤器设计模式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InterceptingFilterDemo</span> &#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">      <span class="type">FilterManager</span> <span class="variable">filterManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FilterManager</span>(<span class="keyword">new</span> <span class="title class_">Target</span>());</span><br><span class="line">      filterManager.setFilter(<span class="keyword">new</span> <span class="title class_">AuthenticationFilter</span>());</span><br><span class="line">      filterManager.setFilter(<span class="keyword">new</span> <span class="title class_">DebugFilter</span>());</span><br><span class="line"></span><br><span class="line">      <span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Client</span>();</span><br><span class="line">      client.setFilterManager(filterManager);</span><br><span class="line">      client.sendRequest(<span class="string">&quot;HOME&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第-8-步"><a href="#第-8-步" class="headerlink" title="第 8 步"></a>第 8 步</h2><p>验证输出。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Authenticating request: HOME</span><br><span class="line">request log: HOME</span><br><span class="line">Executing request: HOME</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/f73eb048.html" data-id="cm49opoq7004j8ou486xzejpi" data-title="设计模式-拦截过滤器" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-dfinity-IC中的账户及相关操作" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/fc25c4a4.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-31T05:50:36.000Z" itemprop="datePublished">2022-08-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="账户分类"><a href="#账户分类" class="headerlink" title="账户分类"></a>账户分类</h2><p>在IC中有如下三个账户：</p>
+<ul>
+<li><p>identity：identity账户是主体标识，其可以与ICP账户(account id)相互映射，并且identity是控制canister的钥匙。</p>
+</li>
+<li><p>ledger：ledger账户是ICP账户(account id)，所有和ICP相关的操作都在ledger中进行。</p>
+</li>
+<li><p>wallet：wallet账户是部署了cycle wallet程序的canister，identity必须设置了wallet才能部署canister。</p>
+</li>
+</ul>
+<h2 id="principal"><a href="#principal" class="headerlink" title="principal"></a>principal</h2><p>principal 首次使用 DFINITY Canister SDK 时，dfx 命令行工具会使用 PEM 文件中的公钥&#x2F;私钥对为您创建默认的开发人员身份。开发人员身份是由派生的principal数据类型和代表principal的文本进行表示，也就是principal identifier(主体身份)。</p>
+<h2 id="account-id"><a href="#account-id" class="headerlink" title="account id"></a>account id</h2><p>开发人员身份还可用于派生出account id（帐户标识符,类似于比特币或以太坊地址），用于在ledger canister中持有 ICP 代币。</p>
+<h2 id="wallet"><a href="#wallet" class="headerlink" title="wallet"></a>wallet</h2><p>wallet 在 Internet Computer上，钱包是一种专门用于cycle的应用程序。钱包应用程序被实现为一个canister，并在互联网计算机上运行。</p>
+<p>钱包使您能够管理cycle余额，将ICP代币转换为cycle，将cycle分发到您自己或其他用户的canister中作为访问或提供互联网服务的一种方式。</p>
+<p>当需要创建canister或者操作canister时，必须要绑定一个wallet canister到当前主体标识才可以进行操作。 </p>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>在整个IC中账户操作有如下一些：</p>
+<ul>
+<li>DFX canister SDK第一次使用时就会关联一个主体标识(principal identity)。使用命令： <code>dfx identity get-principal</code> 可以获取当前主体标识。</li>
+<li>每个主体标识都会派生出一个在leger canister中唯一标识的account id，类似address。使用命令： <code>dfx ledger account-id</code> 可以获取当前的ICP地址。</li>
+<li>第一个canister需要使用leger canister创建，并指定canister的controller，并会向其中存入指定数量cycle。使用命令： <code>dfx ledger --network ic create-canister tsqwz-udeik-5migd-ehrev-pvoqv-szx2g-akh5s-fkyqc-zy6q7-snAV6-uqe --amount .25</code> 可以创建一个canister，并指定了controller主体以及初始化的cycle。</li>
+<li>第一个创建的canister是空的，需要对其部署wallet程序来创建一个wallet canister。使用命令： <code>dfx identity --network ic deploy-wallet gastn-uqaaa-aaaae-aaafq-cai</code> 可以在创建的一个canister中部署wallet程序。该canister称为wallet canister。</li>
+<li>默认情况下部署wallet后，该wallet canister会作为当前主体的cycle wallet，也可以使用如下命令设置当前主体的cycle wallet： <code>dfx identity --network ic set-wallet --force gastn-uqaaa-aaaae-aaafq-cai</code> 成功设置后，当前identity使用该cycle wallet进行canister操作。</li>
+<li>当前主体存在cycle wallet后，就可以使用canister相关操作。例如命令： <code>dfx deploy --network ic</code> 部署当前project中的所有canister，部署完成后，这些canister的controller为当前主体。</li>
+</ul>
+<h2 id="controller"><a href="#controller" class="headerlink" title="controller"></a>controller</h2><p>controller是具有特殊权限的身份，该权限用于管理其控制的canister。只有controller身份可用于安装、升级或删除其控制的canister。</p>
+<p>可以使用与user或canister关联的principal identifier来指定controller身份。</p>
+<h2 id="ledger-canister"><a href="#ledger-canister" class="headerlink" title="ledger canister"></a>ledger canister</h2><p>ledger Internet Computer将所有涉及ICP代币的交易在一个被称为ledger canister的管理canister中进行记录。ledger canister中是一个简化的并行区块链，它与其他网络管理canister一起在互联网计算机的子网中运行。</p>
+<p>ledger canister实现了一个智能合约，该合约持有账户和余额，并保留影响账户和余额的交易历史。记录交易用以跟踪以下特定事件：</p>
+<ul>
+<li>铸造 ICP 代币。</li>
+<li>转移 ICP 代币。</li>
+<li>燃烧 ICP 代币。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/fc25c4a4.html" data-id="cm49opope001u8ou4a62sat19" data-title="IC中的账户及相关操作" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-dfinity-ic上出色的基础设施（持续更新）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/f78d4d0c.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-25T08:32:44.000Z" itemprop="datePublished">2022-08-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>记录一些截止目前我所致比较出色的基础设施，帮助快速开发，避免重复造轮子</p>
+<h1 id="基础设施"><a href="#基础设施" class="headerlink" title="基础设施"></a>基础设施</h1><p><strong>IC-Dataset是一个基于Motoko的数据存储集合，用于交易消息可以实现跨合约的分布式事务管理和TCC模式的数据采集。</strong></p>
+<p>仓库：<a target="_blank" rel="noopener" href="https://github.com/ICPSwap-Labs/ic-dataset">https://github.com/ICPSwap-Labs/ic-dataset</a></p>
+<p><strong>ICME开发者推出水平可扩展的NoSQL数据库</strong></p>
+<p><a target="_blank" rel="noopener" href="https://forum.dfinity.org/t/candb-the-first-scalable-nosql-database-on-the-internet-computer/13984?u=mike1">https://forum.dfinity.org/t/candb-the-first-scalable-nosql-database-on-the-internet-computer/13984?u=mike1</a></p>
+<p><strong>ic4j-agent是一个用于远程连接IC的本地 Java 库</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ic4j/ic4j-agent">https://github.com/ic4j/ic4j-agent</a></p>
+<p><strong>Azle（TypeScript CDK）</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/demergent-labs/azle">https://github.com/demergent-labs/azle</a></p>
+<p><strong>Sudograph（GraphQL数据库）</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/demergent-labs/sudograph">https://github.com/demergent-labs/sudograph</a></p>
+<h1 id="开发指导网站"><a href="#开发指导网站" class="headerlink" title="开发指导网站"></a>开发指导网站</h1><p><strong>motoko语言指导</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hdcafe.com/motoco-base-manual/">https://hdcafe.com/motoco-base-manual/</a></p>
+<p><strong>dfx sdk中文手册</strong></p>
+<p><a target="_blank" rel="noopener" href="https://shuzhichengspace.gitbook.io/dfinity/">https://shuzhichengspace.gitbook.io/dfinity/</a></p>
+<p><strong>ic导航广场</strong></p>
+<p><a target="_blank" rel="noopener" href="https://jeksq-wyaaa-aaaal-qaw3a-cai.ic0.app/#/app/square">https://jeksq-wyaaa-aaaal-qaw3a-cai.ic0.app/#/app/square</a></p>
+<p><strong>官方开发者论坛</strong></p>
+<p><a target="_blank" rel="noopener" href="https://forum.dfinity.org/">https://forum.dfinity.org/</a></p>
+<h1 id="出色的工具网站"><a href="#出色的工具网站" class="headerlink" title="出色的工具网站"></a>出色的工具网站</h1><p><strong>ic浏览器</strong></p>
+<p><a target="_blank" rel="noopener" href="https://icscan.io/">https://icscan.io/</a></p>
+<p><strong>icDapp收纳网站</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.icp123.xyz/">https://www.icp123.xyz/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/f78d4d0c.html" data-id="cm49opopf001y8ou409oj2898" data-title="IC上出色的基础设施（持续更新）" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-DFINITY-入门课第二课" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/9f2c049f.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-19T01:58:37.000Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/9f2c049f.html">IC 入门课第二课</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="课程大纲"><a href="#课程大纲" class="headerlink" title="课程大纲"></a>课程大纲</h1><ol>
+<li>使用 SDK 搭建一个简易网站</li>
+<li>Motoko 语言简介</li>
+<li>Canister 智能合约</li>
+<li>用 Motoko 做后端</li>
+<li>用 Javascript 做前端</li>
+</ol>
+<h1 id="第二课-课程要求"><a href="#第二课-课程要求" class="headerlink" title="第二课-课程要求"></a>第二课-课程要求</h1><p>用 motoko 实现一个快排函数:<br>quicksort : [var Int] -&gt; ()<br>要求:</p>
+<ol>
+<li>用 moc 调试运行</li>
+<li>把函数封装在一个 canister 里面<br> public func qsort(arr: [Int]): async [Int]</li>
+<li>部署到主网</li>
+<li>使用主网的 Candid UI 调试运行<br> <a target="_blank" rel="noopener" href="https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.ic0.app/">https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.ic0.app</a></li>
+</ol>
+<h2 id="课程内容回顾"><a href="#课程内容回顾" class="headerlink" title="课程内容回顾"></a>课程内容回顾</h2><h3 id="ICP上的智能合约"><a href="#ICP上的智能合约" class="headerlink" title="ICP上的智能合约"></a>ICP上的智能合约</h3><p><img src="/img/image-20220819102005820.png" alt="image-20220819102005820"></p>
+<h3 id="Motoko-编程语言基本介绍"><a href="#Motoko-编程语言基本介绍" class="headerlink" title="Motoko 编程语言基本介绍"></a>Motoko 编程语言基本介绍</h3><h4 id="ICP-为什么需要一门新的语言"><a href="#ICP-为什么需要一门新的语言" class="headerlink" title="ICP 为什么需要一门新的语言?"></a>ICP 为什么需要一门新的语言?</h4><ul>
+<li>不是必须的,C, C++, Rust 都可以编译到 Wasm</li>
+<li>缺少一个高级语言同时满足:安全、高效、容易上手</li>
+<li>适配平台特性:Actor 模型、权限管理、代码升级、跨语言调用</li>
+</ul>
+<p><img src="/img/image-20220819100856212.png" alt="image-20220819100856212"></p>
+<h4 id="1-Motoko-语言的特点"><a href="#1-Motoko-语言的特点" class="headerlink" title="1.Motoko 语言的特点"></a>1.Motoko 语言的特点</h4><ul>
+<li>静态类型,语法接近 JavaScript&#x2F;TypeScript</li>
+<li>面向对象,但不支持继承</li>
+<li>支持 await&#x2F;async 异步通信</li>
+<li>结构化类型推断</li>
+<li>安全的数值计算</li>
+<li>没有 NULL 指针</li>
+<li>自动内存回收机制 (GC, copying&#x2F;compacting&#x2F;generational)</li>
+</ul>
+<h4 id="2-Motoko-基础概念"><a href="#2-Motoko-基础概念" class="headerlink" title="2.Motoko 基础概念"></a>2.Motoko 基础概念</h4><ul>
+<li>程序 (program)</li>
+<li>声明 (declaration)</li>
+<li>表达式 (expression)</li>
+<li>值 (value)</li>
+<li>变量 (variable)</li>
+<li>类型 (type)</li>
+</ul>
+<p>官方介绍文档：<a target="_blank" rel="noopener" href="https://smartcontracts.org/docs/language-guide/motoko-introduction.html">https://smartcontracts.org/docs/language-guide/motoko-introduction.html</a></p>
+<p><strong>注意点</strong>：</p>
+<ul>
+<li>使⽤ :&#x3D; 作为通⽤赋值运算符 </li>
+<li>代码块结束需 ;</li>
+<li>声明可变变量需 var 语法</li>
+<li>如果方法有返回值，最后一行<strong>代码块</strong>表示返回语句，可以不加分号</li>
+</ul>
+<h4 id="3-Motoko-基础库"><a href="#3-Motoko-基础库" class="headerlink" title="3.Motoko 基础库"></a>3.Motoko 基础库</h4><p>数字类型:Int Int8 Int16 Int32 Int64 Nat Nat8 Nat16 Nat32 Nat64 Float<br>常用类型:Bool Char Array Text Option Result Iter Func None Hash<br>数据结构:Buffer List AssocList Stack Deque Heap RBTree HashMap Trie TrieMap TriSet</p>
+<p>系统工具:Principal Blob Random CertifiedData Time Debug Prelude</p>
+<p><a target="_blank" rel="noopener" href="https://smartcontracts.org/docs/base-libraries/stdlib-intro.html">https://smartcontracts.org/docs/base-libraries/stdlib-intro.html</a><br><a target="_blank" rel="noopener" href="https://github.com/dfinity/motoko-base">https://github.com/dfinity/motoko-base</a></p>
+<h4 id="4-Motoko-Canister"><a href="#4-Motoko-Canister" class="headerlink" title="4.Motoko Canister"></a>4.Motoko Canister</h4><p>每个 Canister 都是一个 Actor,它的公共方法 (public method) 可供异步调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">actor &#123;</span><br><span class="line">    public func greet(name : Text) : async Text &#123;</span><br><span class="line">    	return &quot;Hello, &quot; # name # &quot;!&quot;;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>数据描述语言 <strong>Candid</strong> 用来规范 Canister 所提供的数据类型、服务接口等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service : &#123;</span><br><span class="line">	greet: (text) -&gt; (text);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>candid介绍：<a target="_blank" rel="noopener" href="https://internetcomputer.org/docs/current/developer-docs/build/candid/candid-concepts">What is Candid?</a> </p>
+<h4 id="5-moc编译器"><a href="#5-moc编译器" class="headerlink" title="5.moc编译器"></a>5.moc编译器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看编译器位置 </span></span><br><span class="line">dfx cache show </span><br><span class="line"><span class="comment"># 添加编译器依赖到环境</span></span><br><span class="line"><span class="comment">#1、临时配置编译器依赖环境，但会话关闭就没有了</span></span><br><span class="line"><span class="built_in">export</span> PATH=$(dfx cache show):<span class="variable">$PATH</span></span><br><span class="line"><span class="comment">#2、永久配置编译器依赖环境</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;export PATH=\$(dfx cache show):\$PATH&quot;</span>  &gt;&gt;  ~/.bashrc</span><br><span class="line"><span class="comment"># 查看是否成功 </span></span><br><span class="line"><span class="built_in">which</span> moc</span><br></pre></td></tr></table></figure>
+
+<h3 id="VS-Code-插件"><a href="#VS-Code-插件" class="headerlink" title="VS Code 插件"></a>VS Code 插件</h3><p>主要是Vs Code插件的演示，</p>
+<ul>
+<li>WSL插件</li>
+<li>motoko代码编译检查插件：需要在project的根目录下打开vscode .  代码提示才有效果</li>
+</ul>
+<h3 id="Candid-UI"><a href="#Candid-UI" class="headerlink" title="Candid UI"></a>Candid UI</h3><p>本地：<a target="_blank" rel="noopener" href="http://127.0.0.1:8000/?canisterId=r7inp-6aaaa-aaaaa-aaabq-cai">http://127.0.0.1:8000/?canisterId=r7inp-6aaaa-aaaaa-aaabq-cai</a></p>
+<p>ic：<a target="_blank" rel="noopener" href="https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.ic0.app/">https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.ic0.app/</a></p>
+<h3 id="Motoko-Playground"><a href="#Motoko-Playground" class="headerlink" title="Motoko Playground"></a>Motoko Playground</h3><p>地址：<a target="_blank" rel="noopener" href="https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/">https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/</a></p>
+<h2 id="作业点评"><a href="#作业点评" class="headerlink" title="作业点评"></a>作业点评</h2><ul>
+<li>快排的学习和使⽤ </li>
+<li>边界检查： <ul>
+<li>空数组报错 </li>
+<li>分治点报错</li>
+<li>数组下标越界</li>
+</ul>
+</li>
+<li>语法的学习和使⽤<ul>
+<li>官方⽂档：<a target="_blank" rel="noopener" href="https://internetcomputer.org/docs/current/developer-docs/build/cdks/motoko-dfinity/basic-concepts">https://internetcomputer.org/docs/current/developer-docs/build/cdks/motoko-dfinity/basic-concepts</a></li>
+<li>例子：**<a target="_blank" rel="noopener" href="https://github.com/dfinity/examples/tree/master/motoko">github example</a><strong>、</strong><a target="_blank" rel="noopener" href="https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/">motoko playground</a>**</li>
+</ul>
+</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">Array</span> <span class="string">&quot;mo:base/Array&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Int</span> <span class="string">&quot;mo:base/Int&quot;</span>; </span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Nat</span> <span class="string">&quot;mo:base/Nat&quot;</span>;</span><br><span class="line">actor &#123;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> func <span class="title function_">qsort</span>(<span class="attr">arr</span>: [<span class="title class_">Int</span>]) : <span class="keyword">async</span> [<span class="title class_">Int</span>] &#123;</span><br><span class="line">        <span class="comment">// 将不可变数组转换为可变数组</span></span><br><span class="line">        <span class="keyword">var</span> <span class="attr">newArr</span>:[<span class="keyword">var</span> <span class="title class_">Int</span>] = <span class="title class_">Array</span>.<span class="title function_">thaw</span>(arr);</span><br><span class="line">        <span class="title function_">sort</span>(newArr, <span class="number">0</span>, newArr.<span class="title function_">size</span>()-<span class="number">1</span>);</span><br><span class="line">        <span class="comment">// 将可变数组转换为不可变数组</span></span><br><span class="line">        <span class="title class_">Array</span>.<span class="title function_">freeze</span>(newArr)</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    func <span class="title function_">sort</span>(<span class="params"><span class="attr">arr</span>:[<span class="keyword">var</span> <span class="title class_">Int</span>],<span class="attr">low</span>:<span class="title class_">Nat</span>,<span class="attr">high</span>:<span class="title class_">Nat</span></span>)&#123;</span><br><span class="line">        <span class="comment">// check point 1/2</span></span><br><span class="line">        <span class="keyword">if</span>(low&gt;=high) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">var</span> temp = arr[low];</span><br><span class="line">        <span class="keyword">var</span> left = low;</span><br><span class="line">        <span class="keyword">var</span> right = high;</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            <span class="keyword">while</span>(arr[right] &gt;= temp and right &gt; left)&#123;</span><br><span class="line">                right -= <span class="number">1</span>;</span><br><span class="line">            &#125;;</span><br><span class="line">        	arr[left] := arr[right]; <span class="comment">// swap 1/3</span></span><br><span class="line">            <span class="keyword">while</span>(arr[left] &lt;= temp and left &lt; right)&#123;</span><br><span class="line">                left += <span class="number">1</span>;</span><br><span class="line">            &#125;;</span><br><span class="line">            arr[right] := arr[left]; <span class="comment">// swap 2/3</span></span><br><span class="line">        &#125;;</span><br><span class="line">        arr[right] := temp; <span class="comment">// swap 3/3</span></span><br><span class="line">        <span class="keyword">if</span>(left &gt;= <span class="number">1</span>) <span class="comment">// check point 2/2</span></span><br><span class="line">            <span class="title function_">sort</span>(arr,low,left-<span class="number">1</span>);</span><br><span class="line">        <span class="title function_">sort</span>(arr,left+<span class="number">1</span>,high);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>官方示例：<a target="_blank" rel="noopener" href="https://github.com/dfinity/examples/blob/master/motoko/quicksort/src/Quicksort.mo">https://github.com/dfinity/examples/blob/master/motoko/quicksort/src/Quicksort.mo</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/9f2c049f.html" data-id="cm49opoo600038ou4ehxbed1g" data-title="IC 入门课第二课" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-DFINITY-入门课第一课" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/af3ae847.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-19T01:33:20.000Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/af3ae847.html">IC 入门课第一课</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="课程大纲"><a href="#课程大纲" class="headerlink" title="课程大纲"></a>课程大纲</h1><ol>
+<li>使用 SDK 搭建一个简易网站</li>
+<li>Motoko 语言简介</li>
+<li>Canister 智能合约</li>
+<li>用 Motoko 做后端</li>
+<li>用 Javascript 做前端</li>
+</ol>
+<h1 id="第一课-课程要求"><a href="#第一课-课程要求" class="headerlink" title="第一课-课程要求"></a>第一课-课程要求</h1><ol>
+<li>使用 SDK 搭建一个简易网站<br>dfx new –no-frontend</li>
+<li>领取 cycles 钱包</li>
+<li>将网站部署到 ic0.app 主网</li>
+<li>思考题:假如开发团队不再维护代码了,用户该怎么办?</li>
+</ol>
+<h2 id="DFINITY-开发者中心，下载-DFINITY-Canister-SDK"><a href="#DFINITY-开发者中心，下载-DFINITY-Canister-SDK" class="headerlink" title="DFINITY 开发者中心，下载 DFINITY Canister SDK"></a>DFINITY 开发者中心，下载 DFINITY Canister SDK</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -ci &quot;$(curl -fsSL https://smartcontracts.org/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-DFINITY-Canister-SDK"><a href="#使用-DFINITY-Canister-SDK" class="headerlink" title="使用 DFINITY Canister SDK"></a>使用 DFINITY Canister SDK</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 新建项目 </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将以下命令中 &lt;project_name&gt; 替换成自己的项目名称 </span></span><br><span class="line"></span><br><span class="line">dfx new &lt;project_name&gt; --no-frontend </span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 启动项目，加上 --backgroud 可以运行在后台 </span></span><br><span class="line"></span><br><span class="line">dfx start </span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 部署项目到本地网络，在logs中可以看到canister_id </span></span><br><span class="line"></span><br><span class="line">dfx deploy </span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 访问部署在本地的项目（仅限assets类型的目录） </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用前端 assets 的 canister_id 替换以下命令中的 &lt;canister_id&gt; </span></span><br><span class="line"></span><br><span class="line">http://&lt;canister_id&gt;.localhost:8000</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取cycles钱包"><a href="#获取cycles钱包" class="headerlink" title="获取cycles钱包"></a>获取cycles钱包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">开发者需要使用 Cycles 钱包才能在主网部署合约，且需要Cycles钱包中有一定的Cycles（相比于以太网的gas，但比以太网的gas低的多的多）</span><br><span class="line">一.课程学员用优惠码领取步骤:</span><br><span class="line">1. 下载并安装 SDK</span><br><span class="line">2. 使用 dfx 命令检查自己的 principal <span class="built_in">id</span></span><br><span class="line">dfx identity get-principal</span><br><span class="line">3. 使用 dfx 命令兑换 cycles 钱包</span><br><span class="line">dfx canister --network=ic --no-wallet \</span><br><span class="line">call fg7gi-vyaaa-aaaal-qadca-cai redeem <span class="string">&#x27;(&quot;xxxxx-yyyyy-zzzzz&quot;)&#x27;</span></span><br><span class="line">4. 使用 dfx 关联钱包</span><br><span class="line">dfx identity --network=ic set-wallet CANISTER_ID</span><br><span class="line"></span><br><span class="line">二.官方水龙头（Cycles Faucet）领取Cycles：</span><br><span class="line">参考步骤链接：https://internetcomputer.org/docs/current/developer-docs/quickstart/cycles-faucet</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="部署到-ic0-app-主网"><a href="#部署到-ic0-app-主网" class="headerlink" title="部署到 ic0.app 主网"></a>部署到 <strong>ic0.app</strong> 主网</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 1. 设置在 IC 网络的默认钱包 </span><br><span class="line"># 将以下命令中 &lt;Wallet ID&gt; 替换成自己的钱包ID </span><br><span class="line">dfx identity --network=ic set-wallet --force &lt;Wallet ID&gt; </span><br><span class="line"># 2. 查询 IC 网络中的钱包余额 </span><br><span class="line">dfx wallet --network=ic balance </span><br><span class="line"># 3. 部署项目到 IC 网络，保存 </span><br><span class="line">canister_id dfx deploy --network=ic </span><br><span class="line"># 4. 访问部署在 IC 网络的项目 </span><br><span class="line"># 将以下命令中 &lt;canister_id&gt; 替换成自己应用的canister_id </span><br><span class="line">https://&lt;canister_id&gt;.ic0.app</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="思考假如开发团队不再维护代码了-用户该怎么办"><a href="#思考假如开发团队不再维护代码了-用户该怎么办" class="headerlink" title="思考假如开发团队不再维护代码了,用户该怎么办?"></a>思考假如开发团队不再维护代码了,用户该怎么办?</h2><p>。。。</p>
+<h1 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h1><h3 id="回收cycles"><a href="#回收cycles" class="headerlink" title="回收cycles"></a>回收cycles</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 回收前后，查询钱包cycles余额 dfx wallet --network=ic balance 123</span><br><span class="line"></span><br><span class="line"># 回收 cycles 步骤，分两步： </span><br><span class="line">dfx canister --network=ic stop --all </span><br><span class="line">dfx canister --network=ic delete --all</span><br><span class="line"></span><br><span class="line"># 使用canister id 回收 cycles 步骤，分三步： </span><br><span class="line"># 1.查询canisterID为 &lt;canister_id&gt; 的canister的状态 </span><br><span class="line">dfx canister --network ic status &lt;canister_id&gt; </span><br><span class="line"># 2.停止canisterID为 &lt;canister_id&gt; 的canister </span><br><span class="line">dfx canister --network=ic stop &lt;canister_id&gt; </span><br><span class="line"># 3.删除canisterID为 &lt;canister_id&gt; 的canister并回收cycles </span><br><span class="line">dfx canister --network=ic delete &lt;canister_id&gt;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/af3ae847.html" data-id="cm49opoo000018ou42pb407xk" data-title="IC 入门课第一课" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-区块链共识机制：POW、POA、POS、DPOS、PBFT、DBFT" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/57b9124b.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-15T08:22:58.000Z" itemprop="datePublished">2022-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/dfinity/">dfinity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/57b9124b.html">区块链共识机制：POW、POA、POS、DPOS、PBFT、DBFT</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>由于区块链的去中心化的特性，没有中心记账节点，需要全网对账本达成共识，因此共识机制作为区块链的关键技术之一，在业务吞吐量、交易速度、不可篡改性、准入门槛等等方面发挥重要的作用。</p>
+<p>本次笔记归纳如下几种共识算法：</p>
+<ul>
+<li>POW，工作量证明</li>
+<li>POS，权益证明</li>
+<li>DPOS，授权POS</li>
+<li>POA，权威证明</li>
+<li>PBFT，实用拜占庭容错算法</li>
+<li>DBFT，授权拜占庭容错算法</li>
+</ul>
+<h3 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a>问题场景</h3><p>区块链技术中<strong>非对称加密</strong>和<strong>可信的分布式网络</strong>解决拜占庭将军问题中的共识问题。</p>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>可以解决古代难以解决的签名问题：</p>
+<ul>
+<li>消息传送的私密性</li>
+<li>能够确认身份</li>
+<li>签名不可伪造、篡改</li>
+</ul>
+<p>作用：保护消息内容, 并且让消息接收方确定发送方的身份。</p>
+<h3 id="分布式记账场景"><a href="#分布式记账场景" class="headerlink" title="分布式记账场景"></a>分布式记账场景</h3><p><img src="https://img2018.cnblogs.com/blog/1387338/201811/1387338-20181108151707807-1596347471.png" alt="img"></p>
+<p> 下面开始归纳现区块链主流共识算法(机制)</p>
+<h2 id="PoW（Proof-of-Work，工作量证明）"><a href="#PoW（Proof-of-Work，工作量证明）" class="headerlink" title="PoW（Proof of Work，工作量证明）"></a>PoW（Proof of Work，工作量证明）</h2><p><strong>“解决一道数学难题”，****“机器性能越好，挖矿时间越长，获得的回报也越多。”</strong></p>
+<p><strong>类型：竞争共识</strong></p>
+<p>概念：工作量证明，引入了对一个特定值的计算工作。**<br>**</p>
+<p>POW共识算法应用场景：比特币（BTC）及其引申出来的BCH、BCD等</p>
+<p>算法工作描述：</p>
+<ol>
+<li>矿工们在挖一个新的区块时，必须对SHA-256密码散列函数进行运算，区块中的随机散列值以一个或多个0开始。</li>
+<li>随着0数目的上升，找到这个解所需要的工作量将呈指数增长，矿工通过反复尝试找到这个解。</li>
+</ol>
+<p>解决问题：</p>
+<ol>
+<li>谁有权记账</li>
+<li>如何避免记账者作弊</li>
+</ol>
+<p><img src="https://img2018.cnblogs.com/blog/1387338/201811/1387338-20181108160801017-1305154882.png" alt="img"></p>
+<p>优点：</p>
+<p>算法简单，采用大家认可的数学逻辑（找寻随机数），容易实现。安全系数最高，破坏整个系统，需要投入巨大成本。</p>
+<p>缺点：</p>
+<ol>
+<li>大量消耗能源。</li>
+<li>它的价值回路必须要通过外部输入。也就是说，采用POW的数字货币仍旧不是理想状态的数字货币，因为它们的安全性不直接与使用者相关，而是要通过矿工这个媒介。</li>
+</ol>
+<p>使用该算法的项目(包含且不限于)：</p>
+<p>Bitcoin、Ethereum、Litecoin、Dogecoin</p>
+<h2 id="POS（Proof-of-Stake，权益证明）"><a href="#POS（Proof-of-Stake，权益证明）" class="headerlink" title="POS（Proof of Stake，权益证明）"></a>POS（Proof of Stake，权益证明）</h2><p><strong>“拥有的币越多，有记账权的概率就越大？”</strong></p>
+<p><strong>类型：竞争共识</strong></p>
+<p>因为POW大量消耗能源和安全性不与使用者相关的问题，POS的出现可以解决这些问题：</p>
+<ol>
+<li>采用POS的货币的安全性直接与使用者相关，省去了矿工这个媒介。</li>
+<li>POS简单说就是，每当发表一条消息的时候，不用证明你付出了什么代价，而要证明你拥有一定数量的钱。而拥有钱代表着，如果你作弊损害了这个系统的安全性，你的钱会贬值，这变相地让你付出了代价。</li>
+<li>这东西更好的一点是，如果采用POS，实际上连挖矿奖励都不需要，因为POS实际上不需要付出任何代价。</li>
+</ol>
+<p>概念：</p>
+<p>试图解决POW机制中大量资源被浪费的情况。这种机制通过计算你持有占总币数的百分比，包括你占有币数的时间来决定记账权。</p>
+<p>优点：不需要拼算力挖矿，不会浪费电力。缩短了共识达成的时间，效率提高。</p>
+<p>缺点：</p>
+<ol>
+<li>拥有权益的参与者因为可以持币吃利息，所以卖币意愿不强烈，容易产生垄断。</li>
+<li>所有的确认都只是概率上的表达，存在其他攻击的可能性。挖矿成本低，硬分叉十分容易。</li>
+</ol>
+<p>使用该算法的项目(包含且不限于)：</p>
+<p>Ethereum、Peercoin、Nxt</p>
+<h2 id="DPOS（Delegated-Proof-of-Stake，授权权益证明）"><a href="#DPOS（Delegated-Proof-of-Stake，授权权益证明）" class="headerlink" title="DPOS（Delegated Proof of Stake，授权权益证明）"></a>DPOS（Delegated Proof of Stake，授权权益证明）</h2><p><strong>可理解为“公司董事会”。</strong></p>
+<p><strong>类型：协同型共识</strong></p>
+<p>2014年4月由Bitshares 的首席开发者 Dan Larimer（BM）提出。它的原理是让每一个持有比特股的人进行投票，由此产生101位代表 , 我们可以将其理解为101个超级节点或者矿池，而这101个超级节点彼此的权利是完全相等的。</p>
+<p>优点：节能；快速；高流量博客网站 Steemit 就使用了它。EOS 的块时间是 0.5 秒。</p>
+<p>缺点：略为中心化；拥有高权益的参与者可投票使自己成为一名验证者（这是近期已在 EOS 中出现的问题）。</p>
+<p>使用该算法的项目(包含且不限于)：</p>
+<p>BitShares、Steemit、EOS、Lisk、Ark。</p>
+<h2 id="POA（Proof-of-Authority，权威证明）"><a href="#POA（Proof-of-Authority，权威证明）" class="headerlink" title="POA（Proof-of-Authority，权威证明）"></a>POA（Proof-of-Authority，权威证明）</h2><p><strong>“投票指定一位被认可的账户作为矿工”</strong></p>
+<p><strong>类型：协同型共识</strong></p>
+<p> 基于 PoA 的网络、事务和区块，是由一些经认可的账户认证的，这些被认可的账户称为“验证者”（Validator）。验证者运行的软件，支持验证者将交易（transaction）置于区块中。该过程是自动的，无需验证者持续监控计算机，但需要维护计算机（权威节点）不妥协（uncompromised）。</p>
+<p>使用 PoA，每个个体都具有变成验证者的权利，因此存在一旦获取就保持验证者位置的动机。通过对身份附加一个声誉，可以鼓励验证者去维护交易的过程。因为验证者并不希望让自己获得负面声誉，这会使其失去来之不易的验证者地位。</p>
+<p>优点：节能、快速。</p>
+<p>缺点：略为中心化；虽然可用于公有区块链，但是通常用于私有区块链和许可区块链。</p>
+<p>使用该算法的项目(包含且不限于)：</p>
+<p>POA.Network、Ethereum Kovan testnet、VeChain</p>
+<h2 id="PBFT（Practical-Byzantine-Fault-Tolerance，实用拜占庭容错算法）"><a href="#PBFT（Practical-Byzantine-Fault-Tolerance，实用拜占庭容错算法）" class="headerlink" title="PBFT（Practical Byzantine Fault Tolerance，实用拜占庭容错算法）"></a>PBFT（Practical Byzantine Fault Tolerance，实用拜占庭容错算法）</h2><p><strong>类型：协同型共识</strong></p>
+<p>首先从“拜占庭将军问题”开始（<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5fea30b25f0a">简书：中本聪与拜占庭将军问题</a>），拜占庭将军问题的实质就是要寻找一个方法，使得将军们在一个有版徒的非信任环境中建立对战斗计划的共识。</p>
+<p>实用拜占庭容错（PBFT，Practical Byzantine Fault Tolerance）是首个提出的该问题解决方案，当前已被 Hyperledger Fabric 采用。PBFT 使用了较少（少于 20 个，之后会稍有增加）的预选定将军数，因此运行非常高效。它的优点是高交易通量和吞吐量，但是不足之处在于是中心化的，并用于许可网络。</p>
+<p>拜占庭容错系统是指：在一个拥有n台节点的系统，整个系统，对每个请求满足如下条件： 所有非拜占庭节点使用相同的输入信息，产生同样的结果； 如果输入的信息正确，那么所有非拜占庭节点必须接收这个信息，并计算相应的结果。</p>
+<p>与此同时,在拜占庭系统的实际运行过程中一般假设系统中拜占庭节点不超过m台，并且对每个请求满足2个指标：</p>
+<p>安全性——任何已经完成的请求都不会被更改，它可以在以后请求看到；</p>
+<p>活性——可以接受并且执行非拜占庭客户端的请求，不会被任何因素影响而导致非拜占庭客户端的请求不能执行。</p>
+<p>优点：高速、可扩展。</p>
+<p>缺点：通常用于私有网络和许可网络。</p>
+<p>使用该算法的项目(包含且不限于)：</p>
+<p>Hyperledger Fabric、Stellar、Ripple、Dispatch</p>
+<h2 id="DBFT-Delegated-Byzantine-Fault-Tolerance-授权拜占庭容错算法）"><a href="#DBFT-Delegated-Byzantine-Fault-Tolerance-授权拜占庭容错算法）" class="headerlink" title="DBFT (Delegated Byzantine Fault Tolerance, 授权拜占庭容错算法）"></a>DBFT (Delegated Byzantine Fault Tolerance, 授权拜占庭容错算法）</h2><p><strong>类型：协同型共识</strong></p>
+<p>同样是为了解决拜占庭将军问题，「授权拜占庭容错」机制，是一种在NEO区块链内部实现的保证容错的共识算法。</p>
+<p>在这个机制当中，存在两个参与者，一个是专业记账的“记账节点”，一个是系统当中的普通用户。</p>
+<p>普通用户基于持有权益的比例来投票决定记账节点，当需要通过一项共识时，在这些记账节点中随机推选出一名发言人拟定方案，然后由其他记账节点根据拜占庭容错算法，即少数服从多数的原则进行表态，如果超过66%的节点表示同意发言人方案，则共识达成；否则，重新推选发言人，重复投票过程。</p>
+<p>优点：快速；可扩展。</p>
+<p>缺点：每个人都争相成为根链。其中可能存在多个根链。</p>
+<p>使用该算法的项目：</p>
+<p>Neo</p>
+<p>注：转载于<a target="_blank" rel="noopener" href="http://t.zoukankan.com/kumata-p-9929588.html">http://t.zoukankan.com/kumata-p-9929588.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/57b9124b.html" data-id="cm49opopp002v8ou4hsphbsz0" data-title="区块链共识机制：POW、POA、POS、DPOS、PBFT、DBFT" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-dfinity开发入门常见问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/55bf785.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-15T02:59:33.000Z" itemprop="datePublished">2022-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/55bf785.html">IC开发入门常见问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="访问不到钥匙-文件等问题"><a href="#访问不到钥匙-文件等问题" class="headerlink" title="访问不到钥匙,文件等问题"></a>访问不到钥匙,文件等问题</h4><p>检查之前命令行是否用了 sudo<br>或者之前是root, 现在用了其他用户</p>
+<h4 id="进入私钥目录"><a href="#进入私钥目录" class="headerlink" title="进入私钥目录"></a>进入私钥目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.config/dfx/identity/</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-dfx-deploy-运行报错"><a href="#1-dfx-deploy-运行报错" class="headerlink" title="1.dfx deploy 运行报错"></a>1.dfx deploy 运行报错</h4><p>可能是没有运行开发环境: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dfx stop &amp;&amp; dfx start </span><br><span class="line">或者 dfx stop &amp;&amp; dfx start --background</span><br><span class="line">或者 dfx stop &amp;&amp; dfx start --clean (清除当前项目的状态)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-在原来canister发布新版本是否需要加上-–with-cycles-xxxx"><a href="#2-在原来canister发布新版本是否需要加上-–with-cycles-xxxx" class="headerlink" title="2.在原来canister发布新版本是否需要加上 –with-cycles&#x3D;xxxx"></a>2.在原来canister发布新版本是否需要加上 –with-cycles&#x3D;xxxx</h4><p>不需要</p>
+<h4 id="3-motoko-打印array"><a href="#3-motoko-打印array" class="headerlink" title="3.motoko 打印array"></a>3.motoko 打印array</h4><p>Debug.print(debug_show(arr));</p>
+<h4 id="4-motoko-语法检查"><a href="#4-motoko-语法检查" class="headerlink" title="4.motoko 语法检查"></a>4.motoko 语法检查</h4><p>dfx build –check</p>
+<h4 id="5-跨-Canister-调用是否有-Timeout-的机制？以防止某个调用不返回导致主调-Canister-无法停止。"><a href="#5-跨-Canister-调用是否有-Timeout-的机制？以防止某个调用不返回导致主调-Canister-无法停止。" class="headerlink" title="5.跨 Canister 调用是否有 Timeout 的机制？以防止某个调用不返回导致主调 Canister 无法停止。"></a>5.跨 Canister 调用是否有 Timeout 的机制？以防止某个调用不返回导致主调 Canister 无法停止。</h4><p>timeout 仅发生在对方子网下线的情况下，其它情况则需要等待对方返回，系统保证它终将返回，可能很久。</p>
+<h4 id="6-冻结时，如果有未返回的跨-Canister-调用会怎样？会等待返回吗？"><a href="#6-冻结时，如果有未返回的跨-Canister-调用会怎样？会等待返回吗？" class="headerlink" title="6.冻结时，如果有未返回的跨 Canister 调用会怎样？会等待返回吗？"></a>6.冻结时，如果有未返回的跨 Canister 调用会怎样？会等待返回吗？</h4><p>stopping 状态是就是等待所有已发出的调用返回，所有都返回了才能进入 stopped 状态</p>
+<h4 id="7-跨-Canister-调用，如何在本地环境调试？可以把主链非自己所有的-Canister-部署到本地环境吗？还是必须自己"><a href="#7-跨-Canister-调用，如何在本地环境调试？可以把主链非自己所有的-Canister-部署到本地环境吗？还是必须自己" class="headerlink" title="7.跨 Canister 调用，如何在本地环境调试？可以把主链非自己所有的 Canister 部署到本地环境吗？还是必须自己"></a>7.跨 Canister 调用，如何在本地环境调试？可以把主链非自己所有的 Canister 部署到本地环境吗？还是必须自己</h4><p>是的，需要把依赖的 canister 自己部署一遍</p>
+<h4 id="8-为什么在例子中，发送了消息-Cycles-balance-没有消费？"><a href="#8-为什么在例子中，发送了消息-Cycles-balance-没有消费？" class="headerlink" title="8.为什么在例子中，发送了消息 Cycles.balance 没有消费？"></a>8.为什么在例子中，发送了消息 <code>Cycles.balance</code> 没有消费？</h4><p>本地起的环境运行 canister 都不消耗 cycles</p>
+<h4 id="9-如果多个人并发调用一个-Canister-中的-Update-方法，是需要排队等待吗？"><a href="#9-如果多个人并发调用一个-Canister-中的-Update-方法，是需要排队等待吗？" class="headerlink" title="9.如果多个人并发调用一个 Canister 中的 Update 方法，是需要排队等待吗？"></a>9.如果多个人并发调用一个 Canister 中的 Update 方法，是需要排队等待吗？</h4><p>发给 canister 的消息都是先进入队列，然后依次执行</p>
+<h4 id="10-HttpRequest-HttpResponse-这些类型是否可以从某些标准库-import-过来？"><a href="#10-HttpRequest-HttpResponse-这些类型是否可以从某些标准库-import-过来？" class="headerlink" title="10.HttpRequest&#x2F; HttpResponse 这些类型是否可以从某些标准库 import 过来？"></a>10.<code>HttpRequest</code>&#x2F; <code>HttpResponse</code> 这些类型是否可以从某些标准库 <code>import</code> 过来？</h4><p>目前没在标准库里</p>
+<h4 id="11-没有-Blob-→-Nat8-的标准方法吗？"><a href="#11-没有-Blob-→-Nat8-的标准方法吗？" class="headerlink" title="11.没有 Blob → [Nat8] 的标准方法吗？"></a>11.没有 <code>Blob</code> → <code>[Nat8]</code> 的标准方法吗？</h4><p>Blob.toArray(blob)</p>
+<h4 id="12-http-request的actor部署在主网之后为什么是显示“Body-does-not-pass-verification”"><a href="#12-http-request的actor部署在主网之后为什么是显示“Body-does-not-pass-verification”" class="headerlink" title="12.http_request的actor部署在主网之后为什么是显示“Body does not pass verification”"></a>12.http_request的actor部署在主网之后为什么是显示“Body does not pass verification”</h4><p>用这个访问 CANISTERID.raw.ic0.app</p>
+<h4 id="13-运行报错The-Replica-returned-an-error-code-5-message-“Canister-xxxx-exceeded-the-cycles-limit-for-single-message-execution-”"><a href="#13-运行报错The-Replica-returned-an-error-code-5-message-“Canister-xxxx-exceeded-the-cycles-limit-for-single-message-execution-”" class="headerlink" title="13.运行报错The Replica returned an error: code 5, message: “Canister xxxx exceeded the cycles limit for single message execution.”"></a>13.运行报错The Replica returned an error: code 5, message: “Canister xxxx exceeded the cycles limit for single message execution.”</h4><p>检查下程序是不是有死循环</p>
+<h4 id="14-升级dfx后报错问题"><a href="#14-升级dfx后报错问题" class="headerlink" title="14.升级dfx后报错问题"></a>14.升级dfx后报错问题</h4><p>检查后台运行的dfx start是否还在旧版本运行</p>
+<h4 id="15-降级dfx版本到0-8-4版本"><a href="#15-降级dfx版本到0-8-4版本" class="headerlink" title="15.降级dfx版本到0.8.4版本"></a>15.降级dfx版本到0.8.4版本</h4><p>DFX_VERSION&#x3D;0.8.4 sh -ci “$(curl -fsSL <a target="_blank" rel="noopener" href="https://sdk.dfinity.org/install.sh">https://sdk.dfinity.org/install.sh</a>)”</p>
+<h4 id="16-Warning-The-versionofDFXused-0-9-2-is-different-than-the-version-beingrun-0-8-4"><a href="#16-Warning-The-versionofDFXused-0-9-2-is-different-than-the-version-beingrun-0-8-4" class="headerlink" title="16.Warning:The versionofDFXused(0.9.2) is different than the version beingrun(0.8.4"></a>16.Warning:The versionofDFXused(0.9.2) is different than the version beingrun(0.8.4</h4><p>This might happen because your dfx.json specifies an older version, or DFX_VERSION is set in your environment.<br>删除或者修改 dfx.json里面的版本version</p>
+<h4 id="17-playground-上部署的内容是否会有销毁时间"><a href="#17-playground-上部署的内容是否会有销毁时间" class="headerlink" title="17.playground 上部署的内容是否会有销毁时间"></a>17.playground 上部署的内容是否会有销毁时间</h4><p>是的</p>
+<h4 id="18-是否有类似javascrpt的Promise-all的方法"><a href="#18-是否有类似javascrpt的Promise-all的方法" class="headerlink" title="18.是否有类似javascrpt的Promise.all的方法"></a>18.是否有类似javascrpt的Promise.all的方法</h4><p>目前没有</p>
+<h4 id="19-TEXT-连接用什么符号"><a href="#19-TEXT-连接用什么符号" class="headerlink" title="19.TEXT 连接用什么符号"></a>19.TEXT 连接用什么符号</h4><p>用#</p>
+<h4 id="20-cycles不够了怎么办"><a href="#20-cycles不够了怎么办" class="headerlink" title="20. cycles不够了怎么办?"></a>20. cycles不够了怎么办?</h4><p>用命令行把ICP转成cycles充值: dfx ledger top-up -h提示<br>或者在nns钱包canister里面,link到canister后top-up</p>
+<h4 id="21-canister-query方法是否支持异步调用"><a href="#21-canister-query方法是否支持异步调用" class="headerlink" title="21. canister query方法是否支持异步调用"></a>21. canister query方法是否支持异步调用</h4><p>不支持,会报错</p>
+<h4 id="21-大数据存储"><a href="#21-大数据存储" class="headerlink" title="21. 大数据存储"></a>21. 大数据存储</h4><p><a target="_blank" rel="noopener" href="https://github.com/PrimLabs/Bucket">https://github.com/PrimLabs/Bucket</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/55bf785.html" data-id="cm49opopi00258ou4h8zch8i2" data-title="IC开发入门常见问题" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-dfinity区块链与经济模型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/e89744dc.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-15T01:53:39.000Z" itemprop="datePublished">2022-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/e89744dc.html">IC区块链与经济模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Dfinity区块链与经济模型"><a href="#Dfinity区块链与经济模型" class="headerlink" title="Dfinity区块链与经济模型"></a>Dfinity区块链与经济模型</h1><p>Dfinity(下称ICP区块链)是一条不保留旧区块的区块链，其通过运行ICP协议来链接节点，形成区块链系统</p>
+<p>在ICP区块链中，主要有两种代币：</p>
+<p>Cycle:</p>
+<ul>
+<li>价值与XDR进行锚定，XDR是综合一系列法币进行加权求和得到的值，可以认为是稳定币。</li>
+<li>作用主要是为给Canister充值，维持Canister运行</li>
+</ul>
+<p>ICP:</p>
+<ul>
+<li>可以通过兑换为Cycle，“充值”给Canister(智能合约容器），维持Canister的运行。</li>
+<li>质押ICP，成为神经元，参与投票。投票可以得到新的ICP,可以认为是“投票挖矿”</li>
+</ul>
+<h2 id="子网"><a href="#子网" class="headerlink" title="子网"></a>子网</h2><ul>
+<li>在ICP区块链中，分布在世界各地的节点通过NNS被划分为若干子网。每个节点可以参与多个子网。每个子网都是一个单独的区块链，运行ICP协议，达成共识。不同于以太坊分片策略的是，ICP区块链没有“母网”，只有不同的子网。</li>
+<li>NNS可以对子网进行重新组合，重新生成与恢复</li>
+</ul>
+<h2 id="ChainKey"><a href="#ChainKey" class="headerlink" title="ChainKey"></a>ChainKey</h2><ul>
+<li>阈值签名:子网的节点对信息进行签名的算法是阈值BLS，一个子网中，对一个信息达成共识的条件是2f+1(总量3f)个节点使用自己的子密钥对一个信息进行签名，达成条件后即可生成完整私钥签名。</li>
+<li>子网公钥:每个子网都根据root key生成自己的链公钥，子网间通信可以直接通过子网公钥核查数据真实性，无需下载旧区块数据。</li>
+<li>IC公开根公钥，用户可以通过根公钥验证一个消息是否为IC返回的消息。</li>
+<li>Catch up packaqe:不保留旧区块，每个子网每隔200个区块进行一次“打包”这次打包将包含当前所有副本的一致性数据，打包后进行阈值签名，超过2f+1个节点签名后，就认为达成一致，此时就可以删去以前的区块，只保留这个“包”。catch up包可以用来恢复数据，同步数据。</li>
+</ul>
+<h2 id="Canister智能合约模型"><a href="#Canister智能合约模型" class="headerlink" title="Canister智能合约模型"></a>Canister智能合约模型</h2><ul>
+<li>在ICP中，一个Canister就是一个WebAssembly容器。</li>
+<li>ICP合约原生语言为Motoko，所有可以编译为wasm的语言都可以写ICP合约，当前支持Rust的cdk比较成熟。</li>
+<li>一个Canister包含一个合约的运行时字节码和数据状态。</li>
+<li>Canister对外提供两种方法处理方案:<ul>
+<li>第一种为update方法，这种方法将对内存数据进行状态修改，需要子网内达成共识，消息处理模型是单线程。</li>
+<li>第二种为query方法，原理是Canister使用Actor模型，每个query方法会在节点内对当前数据状态进行一次“内存快照”，然后进行处理,这种方法的调用不修改数据状态，可以进行并发处理。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Actor模型与原子性"><a href="#Actor模型与原子性" class="headerlink" title="Actor模型与原子性"></a>Actor模型与原子性</h2><p>得益于Actor模型，Canister可以并行进行多个线程，处理不需要更改状态数据的消息，提升服务性能。</p>
+<p>但是，又由于Canister使用Actor模型，不同的Canister之间可以通信，但是数据状态相互隔离，没有状态锁，因此ICP区块链不能保证操作原子性，需要自己实现一些简化的分布式一致性协议来保证原子性。</p>
+<h2 id="前后端都在链上的优劣"><a href="#前后端都在链上的优劣" class="headerlink" title="前后端都在链上的优劣"></a>前后端都在链上的优劣</h2><p>前后端都在链上的优劣</p>
+<ul>
+<li>ICP区块链的前后端可以说都在“链上”。部署时，前后端都编译为wasm部署到节点上。</li>
+<li>优点:因前端wasm在“链上”，或者说在节点上因此浏览器获取到前端wasm后可以验证前端是否是安全的(通过icroot公钥)。</li>
+<li>缺点:当前并不是所有的浏览器都支持wasm运行部分用户无法访问ICP的应用。</li>
+</ul>
+<p><strong>注：转自赵杲老师的技术分享</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/e89744dc.html" data-id="cm49opopg00208ou4bzb51qbo" data-title="IC区块链与经济模型" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-常用软件的docker-compose安装文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/bf4abdda.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-10T03:45:53.000Z" itemprop="datePublished">2022-08-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/docker/">docker</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/bf4abdda.html">常用软件的docker-compose安装文件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="使用docker-compose安装一些常用软件"><a href="#使用docker-compose安装一些常用软件" class="headerlink" title="使用docker-compose安装一些常用软件"></a>使用docker-compose安装一些常用软件</h2><h3 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h3><p><strong>docker-compose.yaml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">mysql-service:</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:8.0.15</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3307</span><span class="string">:3306</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">TZ:</span> <span class="string">Asia/Shanghai</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">Xc58525456</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="string">--default-authentication-plugin=mysql_native_password</span></span><br><span class="line">      <span class="string">--character-set-server=utf8mb4</span></span><br><span class="line">      <span class="string">--collation-server=utf8mb4_general_ci</span></span><br><span class="line">      <span class="string">--explicit_defaults_for_timestamp=true</span></span><br><span class="line">      <span class="string">--lower_case_table_names=1</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker/mysql/data:/var/lib/mysql</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h3><p><strong>docker-compose.yaml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">nginx:</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">80</span><span class="string">:80</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf/nginx.conf:/etc/nginx/nginx.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./wwwroot:/usr/share/nginx/wwwroot</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>nginx.conf</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">worker_processes</span>  <span class="number">1</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line"><span class="string">events</span> &#123;</span><br><span class="line">    <span class="string">worker_connections</span>  <span class="number">1024</span><span class="string">;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">http</span> &#123;</span><br><span class="line">    <span class="string">include</span>       <span class="string">mime.types;</span></span><br><span class="line">    <span class="string">default_type</span>  <span class="string">application/octet-stream;</span></span><br><span class="line">    <span class="string">sendfile</span>        <span class="string">on;</span></span><br><span class="line">    <span class="string">keepalive_timeout</span>  <span class="number">65</span><span class="string">;</span></span><br><span class="line">    <span class="string">charset</span> <span class="string">utf-8;</span>        <span class="comment"># 设置编码格式</span></span><br><span class="line"></span><br><span class="line">    <span class="string">server</span> &#123;</span><br><span class="line"><span class="string">listen</span> <span class="number">80</span><span class="string">;</span></span><br><span class="line">  <span class="string">server_name</span> <span class="number">192.168</span><span class="number">.56</span><span class="number">.10</span><span class="string">;</span></span><br><span class="line">  <span class="string">access_log</span> <span class="string">logs/pbootcms.access.log;</span></span><br><span class="line">  <span class="string">error_log</span> <span class="string">logs/pbootcms.error.log;</span></span><br><span class="line">  <span class="string">index</span> <span class="string">index.html</span> <span class="string">index.htm</span> <span class="string">index.php;</span></span><br><span class="line">  <span class="string">root</span> <span class="string">/home/www/pbootcms;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">#include /usr/local/nginx/conf/rewrite/none.conf;</span></span><br><span class="line">  <span class="comment">#error_page 404 /404.html;</span></span><br><span class="line">  <span class="comment">#error_page 502 /502.html;</span></span><br><span class="line"></span><br><span class="line">  <span class="string">location</span> <span class="string">/</span> &#123;</span><br><span class="line">    <span class="string">if</span> <span class="string">(!-e</span> <span class="string">$request_filename)</span> &#123;</span><br><span class="line">      <span class="string">rewrite</span> <span class="string">^(.*)$</span> <span class="string">/index.php/$1</span> <span class="string">last;</span></span><br><span class="line">      <span class="comment">#rewrite ^(.*)$ /index.php?s=$1 last;</span></span><br><span class="line">      <span class="string">break;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="string">location</span> <span class="string">~</span> [<span class="string">^/</span>]<span class="string">\.php(/|$)</span> &#123;</span><br><span class="line">    <span class="string">fastcgi_pass</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9000;</span></span><br><span class="line">    <span class="comment">#fastcgi_pass unix:/dev/shm/php-cgi.sock;</span></span><br><span class="line">    <span class="string">fastcgi_index</span> <span class="string">index.php;</span></span><br><span class="line">    <span class="string">include</span> <span class="string">/etc/nginx/fastcgi.conf;</span></span><br><span class="line">    <span class="string">fastcgi_split_path_info</span> <span class="string">^(.+?\.php)(/.*)$;</span></span><br><span class="line">    <span class="string">set</span> <span class="string">$path_info</span> <span class="string">$fastcgi_path_info;</span></span><br><span class="line">    <span class="string">fastcgi_param</span> <span class="string">PATH_INFO</span> <span class="string">$path_info;</span></span><br><span class="line">    <span class="string">fastcgi_param</span>  <span class="string">CI_ENV</span> <span class="string">&#x27;development&#x27;</span><span class="string">;</span></span><br><span class="line">    <span class="string">try_files</span> <span class="string">$fastcgi_script_name</span> <span class="string">=404;</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="string">location</span> <span class="string">~</span> <span class="string">.*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$</span> &#123;</span><br><span class="line">    <span class="string">expires</span> <span class="string">30d;</span></span><br><span class="line">    <span class="string">access_log</span> <span class="string">off;</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="string">location</span> <span class="string">~</span> <span class="string">.*\.(js|css)?$</span> &#123;</span><br><span class="line">    <span class="string">expires</span> <span class="string">7d;</span></span><br><span class="line">    <span class="string">access_log</span> <span class="string">off;</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="string">location</span> <span class="string">~</span> <span class="string">/\.ht</span> &#123;</span><br><span class="line">    <span class="string">deny</span> <span class="string">all;</span></span><br><span class="line">  &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="minio"><a href="#minio" class="headerlink" title="minio"></a>minio</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.1&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">    <span class="attr">minio:</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">minio/minio</span></span><br><span class="line">      <span class="attr">container_name:</span> <span class="string">minio</span></span><br><span class="line">      <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">      <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">9001</span><span class="string">:9000</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">8000</span><span class="string">:8000</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">server</span> <span class="string">--address</span> <span class="string">&#x27;0.0.0.0:9000&#x27;</span>  <span class="string">--console-address</span> <span class="string">&quot;0.0.0.0:8000&quot;</span> <span class="string">/data</span></span><br><span class="line">      <span class="attr">logging:</span></span><br><span class="line">        <span class="attr">options:</span></span><br><span class="line">          <span class="attr">max-size:</span> <span class="string">&quot;50M&quot;</span> <span class="comment"># 最大文件上传限制</span></span><br><span class="line">          <span class="attr">max-file:</span> <span class="string">&quot;10&quot;</span></span><br><span class="line">        <span class="attr">driver:</span> <span class="string">json-file</span></span><br><span class="line">      <span class="attr">environment:</span></span><br><span class="line">        <span class="attr">MINIO_ACCESS_KEY:</span> <span class="string">minio</span>    <span class="comment">#管理后台用户名</span></span><br><span class="line">        <span class="attr">MINIO_SECRET_KEY:</span> <span class="string">minio123</span> <span class="comment">#管理后台密码，最小8个字符</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./data:/data</span>              <span class="comment">#映射当前目录下的data目录至容器内/data目录</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./config:/root/.minio/</span>     <span class="comment">#映射配置目录</span></span><br><span class="line">      <span class="attr">healthcheck:</span></span><br><span class="line">        <span class="attr">test:</span> [<span class="string">&quot;CMD&quot;</span>, <span class="string">&quot;curl&quot;</span>, <span class="string">&quot;-f&quot;</span>, <span class="string">&quot;http://localhost:9001/minio/health/live&quot;</span>]</span><br><span class="line">        <span class="attr">interval:</span> <span class="string">30s</span></span><br><span class="line">        <span class="attr">timeout:</span> <span class="string">20s</span></span><br><span class="line">        <span class="attr">retries:</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="elastic-kibana"><a href="#elastic-kibana" class="headerlink" title="elastic-kibana"></a>elastic-kibana</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2.2&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">cerebro:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">lmenezes/cerebro:0.8.3</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">cerebro</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;5701:9000&quot;</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-Dhosts.0.host=http://elasticsearch:9200</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">es7net</span></span><br><span class="line">  <span class="attr">kibana:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.elastic.co/kibana/kibana:7.1.0</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kibana7</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">I18N_LOCALE=zh-CN</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">XPACK_GRAPH_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TIMELION_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">XPACK_MONITORING_COLLECTION_ENABLED=&quot;true&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ELASTICSEARCH_USERNAME=kibana</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ELASTICSEARCH_PASSWORD=demo_password</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;5601:5601&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">es7net</span></span><br><span class="line">  <span class="attr">elasticsearch:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.elastic.co/elasticsearch/elasticsearch:7.1.0</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">es7_01</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">cluster.name=test-es</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">node.name=es7_01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">bootstrap.memory_lock=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;ES_JAVA_OPTS=-Xms512m -Xmx512m&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;TZ=Asia/Shanghai&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">discovery.type=single-node</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">path.data=node0_data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">xpack.security.enabled=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">xpack.security.transport.ssl.enabled=false</span></span><br><span class="line">    <span class="attr">ulimits:</span></span><br><span class="line">      <span class="attr">memlock:</span></span><br><span class="line">        <span class="attr">soft:</span> <span class="number">-1</span></span><br><span class="line">        <span class="attr">hard:</span> <span class="number">-1</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/data/es7data1:/usr/share/elasticsearch/data</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9200</span><span class="string">:9200</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">es7net</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">es7net:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span>	</span><br></pre></td></tr></table></figure>
+
+<h3 id="portainer"><a href="#portainer" class="headerlink" title="portainer"></a>portainer</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">portainer:</span></span><br><span class="line"> <span class="attr">image:</span> <span class="string">portainer/portainer</span></span><br><span class="line"> <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line"> <span class="attr">ports:</span></span><br><span class="line"> <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br><span class="line"> <span class="attr">volumes:</span></span><br><span class="line"> <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br><span class="line"> <span class="bullet">-</span> <span class="string">/data/docker/portainer/data:/data</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="confluence"><a href="#confluence" class="headerlink" title="confluence"></a>confluence</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">confluence-mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">postgres:9.4</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">confluence-db</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;5432:5432&quot;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">POSTGRES_PASSWORD:</span> <span class="string">pg123456.</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/confluence/pgsql-data:/var/lib/postgresql/data</span></span><br><span class="line">  <span class="attr">confluence:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">cptactionhank/atlassian-confluence:7.2.0</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">confluence</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;/home/confluence/apps/confluence:/opt/atlassian/confluence&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;/home/confluence/data:/var/atlassian/confluence&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime&quot;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8090:8090&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">JAVA_OPTS:</span> <span class="string">-Duser.timezone=Asia/Shanghai</span></span><br><span class="line">      <span class="attr">CATALINA_OPTS:</span> <span class="string">-Xms256m</span> <span class="string">-Xmx2g</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">confluence-mysql</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="redis"><a href="#redis" class="headerlink" title="redis"></a>redis</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">master:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-master</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">6379</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">slave1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-slave-1</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">6380</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">redis-server</span> <span class="string">--slaveof</span> <span class="string">redis-master</span> <span class="number">6379</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">slave2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-slave-2</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">6381</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">redis-server</span> <span class="string">--slaveof</span> <span class="string">redis-master</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="wordpress"><a href="#wordpress" class="headerlink" title="wordpress"></a>wordpress</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.3&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">   <span class="attr">db:</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">mysql:5.7</span></span><br><span class="line">     <span class="attr">volumes:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">     <span class="attr">environment:</span></span><br><span class="line">       <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">somewordpress</span></span><br><span class="line">       <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span></span><br><span class="line">       <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span></span><br><span class="line">       <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress</span></span><br><span class="line"></span><br><span class="line">   <span class="attr">wordpress:</span></span><br><span class="line">     <span class="attr">depends_on:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">wordpress:latest</span></span><br><span class="line">     <span class="attr">ports:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">&quot;8000:80&quot;</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">     <span class="attr">environment:</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db:3306</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">    <span class="attr">db_data:</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="zookeeper"><a href="#zookeeper" class="headerlink" title="zookeeper"></a>zookeeper</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">zoo1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.4.11</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zoo1</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper_1</span></span><br><span class="line">    <span class="comment">#domainname:</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2181</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker_app/zookeeper/zoo1/data:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker_app/zookeeper/zoo1/datalog:/datalog</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zoo1:2888:3888</span> <span class="string">server.2=zoo2:2888:3888</span> <span class="string">server.3=zoo3:2888:3888</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zoo2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.4.11</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zoo2</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper_2</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2182</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker_app/zookeeper/zoo2/data:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker_app/zookeeper/zoo2/datalog:/datalog</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">2</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zoo1:2888:3888</span> <span class="string">server.2=zoo2:2888:3888</span> <span class="string">server.3=zoo3:2888:3888</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zoo3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.4.11</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zoo3</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper_3</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2183</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker_app/zookeeper/zoo3/data:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/docker_app/zookeeper/zoo3/datalog:/datalog</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">3</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zoo1:2888:3888</span> <span class="string">server.2=zoo2:2888:3888</span> <span class="string">server.3=zoo3:2888:3888</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="yapi"><a href="#yapi" class="headerlink" title="yapi"></a>yapi</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Use root/example as user/password credentials</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.1&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">mongo:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mongo:4</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_ROOT_USERNAME:</span> <span class="string">root</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_ROOT_PASSWORD:</span> <span class="string">Xc58525456</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_DATABASE:</span> <span class="string">yapi</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./mongo-conf:/docker-entrypoint-initdb.d</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./mongo/etc:/etc/mongo</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./mongo/data/db:/data/db</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">27017</span><span class="string">:27017</span></span><br><span class="line">    <span class="attr">healthcheck:</span></span><br><span class="line">      <span class="attr">test:</span> [<span class="string">&quot;CMD&quot;</span>, <span class="string">&quot;netstat -anp | grep 27017&quot;</span>]</span><br><span class="line">      <span class="attr">interval:</span> <span class="string">2m</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">10s</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">3</span></span><br><span class="line">  <span class="attr">yapi:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">./</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">yapi</span></span><br><span class="line">    <span class="comment"># 第一次启动使用</span></span><br><span class="line">    <span class="comment"># command: &quot;yapi server&quot;</span></span><br><span class="line">    <span class="comment"># 之后使用下面的命令</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&quot;node /my-yapi/vendors/server/app.js&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./my-yapi:/my-yapi</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9090</span><span class="string">:9090</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3000</span><span class="string">:3000</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mongo</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>mongo-confi&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;init-mongo.js</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="title function_">createUser</span>(&#123; <span class="attr">user</span>: <span class="string">&#x27;admin&#x27;</span>, <span class="attr">pwd</span>: <span class="string">&#x27;admin123456&#x27;</span>, <span class="attr">roles</span>: [ &#123; <span class="attr">role</span>: <span class="string">&quot;root&quot;</span>, <span class="attr">db</span>: <span class="string">&quot;admin&quot;</span> &#125; ] &#125;);</span><br><span class="line"></span><br><span class="line">db.<span class="title function_">auth</span>(<span class="string">&quot;admin&quot;</span>, <span class="string">&quot;admin123456&quot;</span>);</span><br><span class="line"> db.<span class="title function_">createUser</span>(&#123;</span><br><span class="line"> <span class="attr">user</span>: <span class="string">&#x27;yapi&#x27;</span>,</span><br><span class="line"> <span class="attr">pwd</span>: <span class="string">&#x27;yapi123456&#x27;</span>,</span><br><span class="line"> <span class="attr">roles</span>: [</span><br><span class="line"> &#123; <span class="attr">role</span>: <span class="string">&quot;dbAdmin&quot;</span>, <span class="attr">db</span>: <span class="string">&quot;yapi&quot;</span> &#125;,</span><br><span class="line"> &#123; <span class="attr">role</span>: <span class="string">&quot;readWrite&quot;</span>, <span class="attr">db</span>: <span class="string">&quot;yapi&quot;</span> &#125;</span><br><span class="line"> ]</span><br><span class="line"></span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Dockerfile</strong></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">12</span>-alpine</span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> repositories /etc/apk/repositories</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install -g yapi-cli --registry https://registry.npm.taobao.org</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3000</span> <span class="number">9090</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>repositories</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://mirrors.aliyun.com/alpine/v3.6/main/</span><br><span class="line"></span><br><span class="line">https://mirrors.aliyun.com/alpine/v3.6/community/</span><br></pre></td></tr></table></figure>
+
+<p><strong>readme</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">YApi Docker镜像</span></span><br><span class="line"><span class="section">==============</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">YApi:  https://github.com/YMFE/yapi/releases</span><br><span class="line"></span><br><span class="line">制作本地的yapi docker镜像, docker-compose一键维护和部署.</span><br><span class="line"></span><br><span class="line"><span class="section">## How</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 初始化db, 开启自定义配置</span><br><span class="line"></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="code">git clone https://github.com/Ryan-Miao/docker-yapi.git</span></span><br><span class="line"><span class="code">cd docker-yapi</span></span><br><span class="line"><span class="code">docker-compose up</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line">打开 localhost:9090</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 默认部署路径为<span class="code">`/my-yapi`</span>(需要修改docker-compose.yml才可以更改)</span><br><span class="line"><span class="bullet">-</span> 修改管理员邮箱 <span class="code">`ryan.miao@demo.com`</span> (随意, 修改为自己的邮箱)</span><br><span class="line"><span class="bullet">-</span> 修改数据库地址为 <span class="code">`mongo`</span> 或者修改为自己的mongo实例 (docker-compose配置的mongo服务名称叫mongo)</span><br><span class="line"><span class="bullet">-</span> 打开数据库认证</span><br><span class="line"><span class="bullet">-</span> 输入数据库用户名: <span class="code">`yapi`</span>(mongo配置的用户名, 见mongo-conf/init-mongo.js)</span><br><span class="line"><span class="bullet">-</span> 输入密码: <span class="code">`yapi123456`</span>(mongo配置的密码, 见mongo-conf/init-mongo.js)</span><br><span class="line"></span><br><span class="line">点击开始部署.</span><br><span class="line"></span><br><span class="line">![](<span class="link">doc/init.jpg</span>)</span><br><span class="line">![](<span class="link">doc/init-2.jpg</span>)</span><br><span class="line"></span><br><span class="line"><span class="bullet">2.</span> 部署完毕后, 修改docker-compose.yml</span><br><span class="line">启用</span><br><span class="line"></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="code">  yapi:</span></span><br><span class="line"><span class="code">    build:</span></span><br><span class="line"><span class="code">      context: ./</span></span><br><span class="line"><span class="code">      dockerfile: Dockerfile</span></span><br><span class="line"><span class="code">    image: yapi</span></span><br><span class="line"><span class="code">    # 第一次启动使用</span></span><br><span class="line"><span class="code">    # command: &quot;yapi server&quot;</span></span><br><span class="line"><span class="code">    # 之后使用下面的命令</span></span><br><span class="line"><span class="code">    command: &quot;node /my-yapi/vendors/server/app.js&quot;</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line">重启服务:</span><br><span class="line"></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="code">docker-compose up</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line">访问 localhost:3000</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 输入用户名ryan.miao@demo.com(自己输入的管理员邮箱)</span><br><span class="line"><span class="bullet">-</span> 输入密码ymfe.org(默认的初始化密码, 之后可以修改)</span><br><span class="line"></span><br><span class="line">然后可以导入一个swagger的接口数据试试:</span><br><span class="line"></span><br><span class="line">![](<span class="link">doc/start-1.jpg</span>)</span><br><span class="line">![](<span class="link">doc/start-2.jpg</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="bullet">3.</span> 后台启动</span><br><span class="line"></span><br><span class="line">前台启动确认没问题后, 直接</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/bf4abdda.html" data-id="cm49opops00318ou45mmmgut2" data-title="常用软件的docker-compose安装文件" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-IC-dfx常用指令" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/fcf443c1.html" class="article-date">
+  <time class="dt-published" datetime="2022-07-12T03:39:02.000Z" itemprop="datePublished">2022-07-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/fcf443c1.html">IC-dfx常用指令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="安装dfx-sdk"><a href="#安装dfx-sdk" class="headerlink" title="安装dfx sdk"></a>安装dfx sdk</h3><p>安装最新版：</p>
+<p><code>sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;</code></p>
+<p>安装指定版本：</p>
+<p><code>DFX_VERSION=0.9.3 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;</code></p>
+<h2 id="dfx常用指令"><a href="#dfx常用指令" class="headerlink" title="dfx常用指令"></a>dfx常用指令</h2><h3 id="identity"><a href="#identity" class="headerlink" title="identity"></a>identity</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dfx identity list #identity 列表</span><br><span class="line">dfx identity get-principal #获取当前的PID</span><br><span class="line">dfx ledger account-id #接收转账的account-id</span><br><span class="line">dfx --identity default ledger --network ic balance #当前账户还有多少ICP</span><br><span class="line">fx --identity xxxx ledger --network ic transfer --memo 0 --amount 0.5 $(dfx --identity default ledger account-id) #从一个账户转账到另一个账户</span><br><span class="line">dfx identity new  developer  #创建新的identity</span><br><span class="line">dfx identity use developer #切换identity</span><br></pre></td></tr></table></figure>
+
+<h3 id="wallet"><a href="#wallet" class="headerlink" title="wallet"></a>wallet</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dfx identity --network ic get-wallet # 获取燃料钱包</span><br><span class="line">dfx ledger --network ic create-canister --amount 0.0 $(dfx identity get-principal) #创建一个canister,创建之后没有钱包</span><br><span class="line">dfx identity --network ic deploy-wallet xxxxx-xxxxx-xxxxx-xxxxx-xxx # 把钱包部署到canister里面shu</span><br><span class="line">dfx wallet --network ic balance #当前钱包的cycles余额</span><br><span class="line">dfx wallet --network ic send $(dfx --identity developer identity get-wallet) 80000590000 #给developer充值  </span><br></pre></td></tr></table></figure>
+
+<h3 id="deploy"><a href="#deploy" class="headerlink" title="deploy"></a>deploy</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dfx deploy #部署到本地</span><br><span class="line">dfx deploy --network ic --with--cycles 80000590000 xxx #部署到主网</span><br></pre></td></tr></table></figure>
+
+<h3 id="canister"><a href="#canister" class="headerlink" title="canister"></a>canister</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dfx canister --network ic status --all #获取canister状态</span><br><span class="line">dfx canister --network ic stop --all # 停止</span><br><span class="line">dfx canister --network ic uninstall-code --all #删除代码</span><br><span class="line">dfx canistet --network ic delete -all #删除并回收cycles</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/fcf443c1.html" data-id="cm49opop100108ou4fqv455rd" data-title="IC-dfx常用指令" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">下一页 &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

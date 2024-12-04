@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Gitlab Runner的安装与配置 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="RunnerRunner就像一个个的工人，而Gitlab-CI就是这些工人的一个管理中心，所有工人都要在Gitlab-CI里面登记注册，并且表明自己是为哪个工程服务的。当相应的工程发生变化时，Gitlab-CI就会通知相应的工人执行软件集成脚本。如下图所示：  gitlab里面的runner叫Gitlab-Runner，Gitlab-Runner是配合Gitlab-CI进行使用的。一般地，Gitl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gitlab Runner的安装与配置">
+<meta property="og:url" content="https://mrxccc.github.io/posts/52649bb.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="RunnerRunner就像一个个的工人，而Gitlab-CI就是这些工人的一个管理中心，所有工人都要在Gitlab-CI里面登记注册，并且表明自己是为哪个工程服务的。当相应的工程发生变化时，Gitlab-CI就会通知相应的工人执行软件集成脚本。如下图所示：  gitlab里面的runner叫Gitlab-Runner，Gitlab-Runner是配合Gitlab-CI进行使用的。一般地，Gitl">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrxccc.github.io/img/gitlab-runner.png">
+<meta property="og:image" content="https://mrxccc.github.io/img/gitlab-ci-runner.png">
+<meta property="og:image" content="https://mrxccc.github.io/img/gitlab-runner-regist.png">
+<meta property="article:published_time" content="2020-11-03T04:57:44.000Z">
+<meta property="article:modified_time" content="2024-12-04T09:00:22.626Z">
+<meta property="article:author" content="mrxccc">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrxccc.github.io/img/gitlab-runner.png">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Gitlab Runner的安装配置" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/52649bb.html" class="article-date">
+  <time class="dt-published" datetime="2020-11-03T04:57:44.000Z" itemprop="datePublished">2020-11-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/gitlab-ci/">gitlab-ci</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Gitlab Runner的安装与配置
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="Runner"><a href="#Runner" class="headerlink" title="Runner"></a>Runner</h2><p>Runner就像一个个的工人，而Gitlab-CI就是这些工人的一个管理中心，所有工人都要在Gitlab-CI里面登记注册，并且表明自己是为哪个工程服务的。当相应的工程发生变化时，Gitlab-CI就会通知相应的工人执行软件集成脚本。如下图所示：</p>
+<p><img src="/img/gitlab-runner.png"></p>
+<p>gitlab里面的runner叫<code>Gitlab-Runner</code>，Gitlab-Runner是配合Gitlab-CI进行使用的。一般地，Gitlab里面的每一个工程都会定义一个属于这个工程的软件集成脚本，用来自动化地完成一些软件集成工作。当这个工程的仓库代码发生变动时，比如有人push了代码，GitLab就会将这个变动通知Gitlab-CI。这时Gitlab-CI会找出与这个工程相关联的Runner，并通知这些Runner把代码更新到本地并执行预定义好的执行脚本(也就是在<code>Job执行流程</code>那个图中所示的第三步：script)，所以，Gitlab-Runner就是一个用来执行软件集成脚本<code>script</code>的东西。</p>
+<p>Runner类型</p>
+<p>Gitlab-Runner可以分类两种类型：<strong>Shared Runner（共享型）</strong>和<strong>Specific Runner（指定型）</strong>。</p>
+<ul>
+<li><strong>Shared Runner：</strong>这种Runner（工人）是所有工程都能够用的。只有系统管理员能够创建Shared Runner。</li>
+<li><strong>Specific Runner：</strong>这种Runner（工人）只能为指定的工程服务。拥有该工程访问权限的人都能够为该工程创建Shared Runner。</li>
+</ul>
+<h3 id="什么情况下需要注册Shared-Runner？"><a href="#什么情况下需要注册Shared-Runner？" class="headerlink" title="什么情况下需要注册Shared Runner？"></a>什么情况下需要注册Shared Runner？</h3><ol>
+<li>比如，GitLab上面所有的工程都有可能需要在公司的服务器上进行编译、测试、部署等工作，这个时候注册一个Shared Runner供所有工程使用就很合适。</li>
+</ol>
+<h3 id="什么情况下需要注册Specific-Runner？"><a href="#什么情况下需要注册Specific-Runner？" class="headerlink" title="什么情况下需要注册Specific Runner？"></a>什么情况下需要注册Specific Runner？</h3><ol>
+<li>比如，我可能需要在我个人的电脑或者服务器上自动构建我参与的某个工程，这个时候注册一个Specific Runner就很合适。</li>
+</ol>
+<h3 id="Runner搭建"><a href="#Runner搭建" class="headerlink" title="Runner搭建"></a>Runner搭建</h3><p>  1、linux操作系统，安装docker环境。（如果安装了devops，docker环境可以不用安装）</p>
+<p>  2、安装gitlab-runner</p>
+<h4 id="1-Runner-安装"><a href="#1-Runner-安装" class="headerlink" title="1. Runner 安装"></a>1. Runner 安装</h4><p>在<code>GitLab Runner 10</code>之前，gitlab-runner的名称叫<code>gitlab-ci-multi-runner</code>,安装命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># For Debian/Ubuntu</span></span><br><span class="line">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.deb.sh | <span class="built_in">sudo</span> bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># For RHEL/CentOS</span></span><br><span class="line">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | <span class="built_in">sudo</span> bash</span><br></pre></td></tr></table></figure>
+
+<p>在<code>GitLab Runner 10</code>及其以上，可执行文件已重命名为<code>gitlab-runner</code>。</p>
+<p>linux系统，可以通过以下命令安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># For Debian/Ubuntu/Mint</span></span><br><span class="line">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | <span class="built_in">sudo</span> bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># For RHEL/CentOS/Fedora</span></span><br><span class="line">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | <span class="built_in">sudo</span> bash</span><br></pre></td></tr></table></figure>
+
+<p>如果要安装特定版本的GitLab Runner：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># for DEB based systems</span></span><br><span class="line">apt-cache madison gitlab-runner</span><br><span class="line"><span class="built_in">export</span> GITLAB_RUNNER_DISABLE_SKEL=<span class="literal">true</span>; <span class="built_in">sudo</span> -E apt-get install gitlab-runner=10.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># for RPM based systems</span></span><br><span class="line">yum list gitlab-runner --showduplicates | <span class="built_in">sort</span> -r</span><br><span class="line"><span class="built_in">export</span> GITLAB_RUNNER_DISABLE_SKEL=<span class="literal">true</span>; <span class="built_in">sudo</span> -E yum install gitlab-runner-10.0.0-1</span><br></pre></td></tr></table></figure>
+
+<p>授予其执行权限：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x /usr/local/bin/gitlab-runner</span><br></pre></td></tr></table></figure>
+
+<p>创建一个GitLab CI用户：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd --comment &#x27;GitLab Runner&#x27; --create-home gitlab-runner --shell /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>安装并作为服务运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner</span><br><span class="line">sudo gitlab-runner start</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-获取Runner注册Token"><a href="#2-获取Runner注册Token" class="headerlink" title="2. 获取Runner注册Token"></a>2. 获取Runner注册Token</h4><p>安装好Runner之后，需要向Gitlab进行注册，注册Runner需要GitLab-CI的url和token。可根据需求注册选择所需类型Runner。这里介绍spercific runners为例</p>
+<p><img src="/img/gitlab-ci-runner.png"></p>
+<p>图中的Url和Token是runner链接到仓库的两个重要参数</p>
+<h4 id="3-runner配置"><a href="#3-runner配置" class="headerlink" title="3.runner配置"></a>3.runner配置</h4><p>执行注册runner的命令(如果你是安装的<code>gitlab-ci-multi-runner</code>)：<code>sudo gitlab-ci-multi-runner register</code></p>
+<p>执行注册runner的命令(如果你是安装的<code>gitlab-runner</code>)：<code>sudo gitlab-runner register</code></p>
+<p>接下来会提示你输入一系列配置内容</p>
+<blockquote>
+<p>注意，在要求输入<code>tag</code>时，想好tag的名字，这个就相当于你的runner的id</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">## 输入url</span><br><span class="line">a、Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com )</span><br><span class="line"> </span><br><span class="line">## 输入token</span><br><span class="line">b、Please enter the gitlab-ci token for this runner</span><br><span class="line"> </span><br><span class="line">## 写个描述</span><br><span class="line">c、Please enter the gitlab-ci description for this runner</span><br><span class="line"> </span><br><span class="line">## 这个tag很重要，好好想个名字并记住，随后在ci配置中需要对应上。</span><br><span class="line">d、Please enter the gitlab-ci tags for this runner (comma separated)</span><br><span class="line"> </span><br><span class="line">## ci没有配置tags时是否执行这个runner？建议采用默认值。            </span><br><span class="line">e、Whether to run untagged builds [true/false]</span><br><span class="line"> </span><br><span class="line">## 是否只对当前工程有效？理论上讲只有“Shared runners”才有效。选true。            </span><br><span class="line">f、Whether to lock Runner to current project [true/false]</span><br><span class="line"> </span><br><span class="line">## 选择一个执行器。我们接来下的方案是基于shell的，输入shell。    </span><br><span class="line">g、Please enter the executor: virtualbox, docker+machine, kubernetes, parallels, docker-ssh, shell, ssh, docker-ssh+machine, docker:</span><br></pre></td></tr></table></figure>
+
+<p>注册完成后，会出现一个runner，我这里注册了两个，所以会有两个tag</p>
+<blockquote>
+<p>runner 左边会有一个<code>小绿点</code>，表示该runner是能正常执行的</p>
+</blockquote>
+<p><img src="/img/gitlab-runner-regist.png" alt="image-20201103104204166"></p>
+<h4 id="Gitlab-runner的配置"><a href="#Gitlab-runner的配置" class="headerlink" title="Gitlab-runner的配置"></a>Gitlab-runner的配置</h4><p>GitLab-CI会为这个Runner生成一个唯一的token，以后Runner就通过这个token与GitLab-CI进行通信。</p>
+<p>那么，问题来了。注册好了的Runner的信息存放在哪儿了呢？</p>
+<p>原来，Runner的信息是存放在一个配置文件里面的，配置文件的格式一般是.toml。这个配置文件的存放位置有以下几种情况：</p>
+<ul>
+<li>在类Unix操作系统下（0.5.0之后版本）<ul>
+<li>如果是以root用户身份运行gitlab-runner register，那么配置文件默认是&#x2F;etc&#x2F;gitlab-runner&#x2F;config.toml</li>
+<li>如果是以非root用户身份运行gitlab-runner register，那么配置文件默认是~&#x2F;.gitlab-runner&#x2F;config.toml</li>
+</ul>
+</li>
+<li>在其他操作系统下以及0.5.0之前版本</li>
+</ul>
+<p>配置文件默认在当前工作目录下.&#x2F;config.toml</p>
+<p>一般情况下，使用默认的配置文件存放Runner的配置信息就可以了。当然，如果你有更细化的分类需求，你也可以在注册的时候通过-c或–config选项指定配置文件的位置。具体查看register命令的使用方法：<code>gitlab-runner register --help</code>。</p>
+<p><strong>问题：</strong>如果不运行<code>gitlab-runner register</code>命令，直接在配置文件里面添加Runner的配置信息可以吗？</p>
+<p><strong>回答：</strong>当然不可以。因为gitlab-ci-runner register的作用除了把Runner的信息保存到配置文件以外，还有一个很重要的作用，那就是向GitLab-CI发出请求，在GitLab-CI中登记这个Runner的信息并且获取后续通信所需要的token。</p>
+<h2 id="让注册好的Runner运行起来"><a href="#让注册好的Runner运行起来" class="headerlink" title="让注册好的Runner运行起来"></a>让注册好的Runner运行起来</h2><p>Runner注册完成之后还不行，还必须让它运行起来，否则它无法接收到GitLab-CI的通知并且执行软件集成脚本。怎么让Runner运行起来呢？gitlab-runner提供了这样一条命令gitlab-runner run-single</p>
+<p>以上的就是在linux机器上直接安装runner的过程，关于gitlab ci怎么使用runner执行我们想要执行的任务，可参考这篇文章：</p>
+<p><a href="https://mrxccc.github.io/posts/66a907b1.html">Gitlab-CICD最简单明了的入门教程</a></p>
+<p>使用docker安装gitlab runner：<a href="https://mrxccc.github.io/posts/66a907b1.html">Gitlab Runner的容器化安装与使用</a></p>
+<p>更多精彩内容：<a href="https://mrxccc.github.io/">mrxccc</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/52649bb.html" data-id="cm49opooy000s8ou4egax1ue2" data-title="Gitlab Runner的安装与配置" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/5a86ebac.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          设计模式-抽象工厂模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/7a7080f.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Gitlab-runner的容器化安装与使用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

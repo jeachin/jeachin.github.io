@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>设计模式-建造者模式 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1.变化是永恒的首先，我们由一个例子来进入入今天的主题 又是一个周三，快要下班了，老大突然拉住我，喜滋滋地告诉我：“××公司很满意我们做的模型，又签订了一个合同，把奔驰、宝马的车辆模型都交给我们公司制作了，不过这次又额外增加了一个新需求：汽车的启动、停止、喇叭声音、引擎声音都由客户自己控制，他想什么顺序就什么顺序，这个没问题吧？” 那任务又是一个时间紧、工程量大的项目，为什么是“又”呢？因为基本上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式-建造者模式">
+<meta property="og:url" content="https://mrxccc.github.io/posts/2a48474d.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="1.变化是永恒的首先，我们由一个例子来进入入今天的主题 又是一个周三，快要下班了，老大突然拉住我，喜滋滋地告诉我：“××公司很满意我们做的模型，又签订了一个合同，把奔驰、宝马的车辆模型都交给我们公司制作了，不过这次又额外增加了一个新需求：汽车的启动、停止、喇叭声音、引擎声音都由客户自己控制，他想什么顺序就什么顺序，这个没问题吧？” 那任务又是一个时间紧、工程量大的项目，为什么是“又”呢？因为基本上">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mrxccc.github.io/img/builder-1.png">
+<meta property="og:image" content="https://mrxccc.github.io/img/builder-2.png">
+<meta property="og:image" content="https://mrxccc.github.io/img/builder-3.png">
+<meta property="og:image" content="https://mrxccc.github.io/img/builder-4.png">
+<meta property="article:published_time" content="2020-11-24T06:09:03.000Z">
+<meta property="article:modified_time" content="2024-12-04T09:00:22.711Z">
+<meta property="article:author" content="mrxccc">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mrxccc.github.io/img/builder-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-设计模式-建造者模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/2a48474d.html" class="article-date">
+  <time class="dt-published" datetime="2020-11-24T06:09:03.000Z" itemprop="datePublished">2020-11-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      设计模式-建造者模式
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-变化是永恒的"><a href="#1-变化是永恒的" class="headerlink" title="1.变化是永恒的"></a>1.变化是永恒的</h3><p>首先，我们由一个例子来进入入今天的主题</p>
+<p>又是一个周三，快要下班了，老大突然拉住我，喜滋滋地告诉我：“××公司很满意我们做的模型，又签订了一个合同，把奔驰、宝马的车辆模型都交给我们公司制作了，不过这次又额外增加了一个新需求：<code>汽车的启动、停止、喇叭声音、引擎声音</code>都由客户自己控制，他想什么顺序就什么顺序，这个没问题吧？”</p>
+<p>那任务又是一个时间紧、工程量大的项目，为什么是“又”呢？因为基本上每个项目都是如此，我该怎么来完成这个任务呢？</p>
+<p>首先，我们分析一下需求，奔驰、宝马都是一个产品，它们有共有的属性，××公司关心的是单个模型的运行过程：奔驰模型A是先有引擎声音，然后再响喇叭；奔驰模型B是先启动起来，然后再有引擎声音，这才是××公司要关心的。那到我们老大这边呢，就是满足人家的要求，要什么顺序就立马能产生什么顺序的模型出来。我就负责把老大的要求实现出来，而且还要是批量的，也就是说××公司下单订购宝马A车模，我们老大马上就找我“生产一个这样的车模，启动完毕后，喇叭响一下”，然后我们就准备开始批量生产这些模型。由我生产出N多个奔驰和宝马车辆模型，这些车辆模型都有run()方法，但是具体到每一个模型的run()方法中间的执行任务的顺序是不同的，老大说要啥顺序，我就给啥顺序，最终客户买走后只能是既定的模型。</p>
+<p>好，需求还是比较复杂，我们先一个一个地解决，先从找一个最简单的切入点——产品类，每个车都是一个产品，如图所示。</p>
+<p><img src="/img/builder-1.png"></p>
+<p>类图比较简单，在CarModel中我们定义了一个setSequence方法，车辆模型的这几个动作要如何排布，是在这个ArrayList中定义的。然后run()方法根据sequence定义的顺序完成指定的顺序动作，我们先看CarModel源代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">CarModel</span> &#123;</span><br><span class="line">    <span class="comment">//这个参数是各个基本方法执行的顺序</span></span><br><span class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; sequence = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();</span><br><span class="line">    <span class="comment">//模型是启动开始跑了</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">start</span><span class="params">()</span>;</span><br><span class="line">    <span class="comment">//能发动，还要能停下来，那才是真本事</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>;</span><br><span class="line">    <span class="comment">//喇叭会出声音，是滴滴叫，还是哔哔叫</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">alarm</span><span class="params">()</span>;</span><br><span class="line">    <span class="comment">//引擎会轰隆隆地响，不响那是假的</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">engineBoom</span><span class="params">()</span>;</span><br><span class="line">    <span class="comment">//那模型应该会跑吧，别管是人推的，还是电力驱动，总之要会跑</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//循环一边，谁在前，就先执行谁</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="built_in">this</span>.sequence.size();i++)&#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">actionName</span> <span class="operator">=</span> <span class="built_in">this</span>.sequence.get(i);</span><br><span class="line">            <span class="keyword">if</span>(actionName.equalsIgnoreCase(<span class="string">&quot;start&quot;</span>))&#123;</span><br><span class="line">                <span class="built_in">this</span>.start();  <span class="comment">//启动汽车</span></span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(actionName.equalsIgnoreCase(<span class="string">&quot;stop&quot;</span>))&#123;</span><br><span class="line">                <span class="built_in">this</span>.stop(); <span class="comment">//停止汽车</span></span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(actionName.equalsIgnoreCase(<span class="string">&quot;alarm&quot;</span>))&#123;</span><br><span class="line">                <span class="built_in">this</span>.alarm(); <span class="comment">//喇叭开始叫了</span></span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(actionName.equalsIgnoreCase(<span class="string">&quot;engine boom&quot;</span>))&#123;</span><br><span class="line">                <span class="comment">//如果是engine boom关键字</span></span><br><span class="line">                <span class="built_in">this</span>.engineBoom();  <span class="comment">//引擎开始轰鸣</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//把传递过来的值传递到类内</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSequence</span><span class="params">(ArrayList sequence)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.sequence = sequence;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CarModel的设计原理是这样的，setSequence方法是允许客户自己设置一个顺序，是要先启动响一下喇叭再跑起来，还是要先响一下喇叭再启动。对于一个具体的模型永远都固定的，但是对N多个模型就是动态的了。在子类中实现父类的基本方法，run()方法读取sequence，然后遍历sequence中的字符串，哪个字符串在先，就先执行哪个方法。</p>
+<p>两个实现类分别实现父类的基本方法，奔驰模型、宝马模型如代码清单如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">// 奔驰模型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BenzModel</span> <span class="keyword">extends</span> <span class="title class_">CarModel</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">alarm</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;奔驰车的喇叭声音是这个样子的...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">engineBoom</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;奔驰车的引擎是这个声音的...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">start</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;奔驰车跑起来是这个样子的...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;奔驰车应该这样停车...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 宝马模型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BMWModel</span> <span class="keyword">extends</span> <span class="title class_">CarModel</span> &#123;</span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">alarm</span><span class="params">()</span> &#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;宝马车的喇叭声音是这个样子的...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">engineBoom</span><span class="params">()</span> &#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;宝马车的引擎是这个声音的...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">start</span><span class="params">()</span> &#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;宝马车跑起来是这个样子的...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="meta">@Override</span></span><br><span class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;宝马车应该这样停车...&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两个产品的实现类都完成，我们来模拟一下××公司的要求：生产一个奔驰模型，要求跑的时候，先发动引擎，然后再挂挡启动，然后停下来，不需要喇叭。这个需求很容易满足，我们增加一个场景类实现该需求，如代码清单如下所示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">             <span class="comment">/*</span></span><br><span class="line"><span class="comment">              * 客户告诉XX公司，我要这样一个模型，然后XX公司就告诉我老大</span></span><br><span class="line"><span class="comment">              * 说要这样一个模型，这样一个顺序，然后我就来制造</span></span><br><span class="line"><span class="comment">              */</span></span><br><span class="line">             <span class="type">BenzModel</span> <span class="variable">benz</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BenzModel</span>();</span><br><span class="line">             <span class="comment">//存放run的顺序</span></span><br><span class="line">             ArrayList&lt;String&gt; sequence  = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();                 </span><br><span class="line">             sequence.add(<span class="string">&quot;engine boom&quot;</span>);  <span class="comment">//客户要求，run的时候先发动引擎</span></span><br><span class="line">             sequence.add(<span class="string">&quot;start&quot;</span>);  <span class="comment">//启动起来</span></span><br><span class="line">             sequence.add(<span class="string">&quot;stop&quot;</span>);   <span class="comment">//开了一段就停下来         </span></span><br><span class="line">             <span class="comment">//我们把这个顺序赋予奔驰车</span></span><br><span class="line">             benz.setSequence(sequence);</span><br><span class="line">             benz.run();                </span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">奔驰车的引擎是这个声音的...</span><br><span class="line"></span><br><span class="line">奔驰车跑起来是这个样子的...</span><br><span class="line"></span><br><span class="line">奔驰车应该这样停车...</span><br></pre></td></tr></table></figure>
+
+<p>看，我们组装了这样的一辆汽车，满足了××公司的需求。</p>
+<p>但是想想我们的需求，汽车的动作执行顺序是要能够随意调整的。我们只满足了一个需求，还有下一个需求呀，然后是第二个宝马模型，只要启动、停止，其他的什么都不要；第三个模型，先喇叭，然后启动，然后停止；第四个……直到把你逼疯为止，那怎么办？我们就一个一个地来写场景类满足吗？不可能了，那我们要想办法来解决这个问题，有了！我们为每种模型产品模型定义一个建造者，你要啥顺序直接告诉建造者，由建造者来建造，类图如下</p>
+<p><img src="/img/builder-2.png"></p>
+<p>增加了一个CarBuilder抽象类，由它来组装各个车模，要什么类型什么顺序的车辆模型，都由相关的子类完成。首先编写CarBuilder代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">CarBuilder</span> &#123;</span><br><span class="line">     <span class="comment">//建造一个模型，你要给我一个顺序要求，就是组装顺序</span></span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">setSequence</span><span class="params">(ArrayList&lt;String&gt; sequence)</span>;</span><br><span class="line">     <span class="comment">//设置完毕顺序后，就可以直接拿到这个车辆模型</span></span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">abstract</span> CarModel <span class="title function_">getCarModel</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很简单，每个车辆模型都要有确定的运行顺序，然后才能返回一个车辆模型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BenzBuilder</span> <span class="keyword">extends</span> <span class="title class_">CarBuilder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">BenzModel</span> <span class="variable">benz</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BenzModel</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> CarModel <span class="title function_">getCarModel</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.benz;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSequence</span><span class="params">(ArrayList&lt;String&gt; sequence)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.benz.setSequence(sequence);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>非常简单实用的程序，给定一个汽车的运行顺序，然后就返回一个奔驰车，简单了很多。宝马车的组装与此相同</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BMWBuilder</span> <span class="keyword">extends</span> <span class="title class_">CarBuilder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">BMWModel</span> <span class="variable">bmw</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BMWModel</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> CarModel <span class="title function_">getCarModel</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.bmw;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSequence</span><span class="params">(ArrayList&lt;String&gt; sequence)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.bmw.setSequence(sequence);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两个组装者都完成了，我们再来看看××公司的需求如何满足，修改一下场景类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">             <span class="comment">/*</span></span><br><span class="line"><span class="comment">              * 客户告诉XX公司，我要这样一个模型，然后XX公司就告诉我老大</span></span><br><span class="line"><span class="comment">              * 说要这样一个模型，这样一个顺序，然后我就来制造</span></span><br><span class="line"><span class="comment">              */</span></span><br><span class="line">             <span class="comment">//存放run的顺序</span></span><br><span class="line">             ArrayList&lt;String&gt; sequence = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();</span><br><span class="line">             sequence.add(<span class="string">&quot;engine boom&quot;</span>);  <span class="comment">//客户要求，run时候时候先发动引擎</span></span><br><span class="line">             sequence.add(<span class="string">&quot;start&quot;</span>);  <span class="comment">//启动起来</span></span><br><span class="line">             sequence.add(<span class="string">&quot;stop&quot;</span>);   <span class="comment">//开了一段就停下来</span></span><br><span class="line">             <span class="comment">//要一个奔驰车：</span></span><br><span class="line">             <span class="type">BenzBuilder</span> <span class="variable">benzBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BenzBuilder</span>();</span><br><span class="line">             <span class="comment">//把顺序给这个builder类，制造出这样一个车出来</span></span><br><span class="line">             benzBuilder.setSequence(sequence);</span><br><span class="line">             <span class="comment">//制造出一个奔驰车</span></span><br><span class="line">             <span class="type">BenzModel</span> <span class="variable">benz</span> <span class="operator">=</span> (BenzModel)benzBuilder.getCarModel();</span><br><span class="line">             <span class="comment">//奔驰车跑一下看看</span></span><br><span class="line">             benz.run();                </span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">奔驰车的引擎是这个声音的...</span><br><span class="line"></span><br><span class="line">奔驰车跑起来是这个样子的...</span><br><span class="line"></span><br><span class="line">奔驰车应该这样停车...</span><br></pre></td></tr></table></figure>
+
+<p>那如果我再想要个同样顺序的宝马车呢？很简单，再次修改一下场景类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">//存放run的顺序</span></span><br><span class="line">        ArrayList&lt;String&gt; sequence = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();</span><br><span class="line">        sequence.add(<span class="string">&quot;engine boom&quot;</span>);  <span class="comment">//客户要求，run的时候先发动引擎</span></span><br><span class="line">        sequence.add(<span class="string">&quot;start&quot;</span>);  <span class="comment">//启动起来</span></span><br><span class="line">        sequence.add(<span class="string">&quot;stop&quot;</span>);  <span class="comment">//开了一段就停下来</span></span><br><span class="line">        <span class="comment">//要一个奔驰车：</span></span><br><span class="line">        <span class="type">BenzBuilder</span> <span class="variable">benzBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BenzBuilder</span>();</span><br><span class="line">        <span class="comment">//把顺序给这个builder类，制造出这样一个车出来</span></span><br><span class="line">        benzBuilder.setSequence(sequence);</span><br><span class="line">        <span class="comment">//制造出一个奔驰车</span></span><br><span class="line">        <span class="type">BenzModel</span> <span class="variable">benz</span> <span class="operator">=</span> (BenzModel)benzBuilder.getCarModel();</span><br><span class="line">        <span class="comment">//奔驰车跑一下看看</span></span><br><span class="line">        benz.run();</span><br><span class="line">        <span class="comment">//按照同样的顺序，我再要一个宝马</span></span><br><span class="line">        <span class="type">BMWBuilder</span> <span class="variable">bmwBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BMWBuilder</span>();</span><br><span class="line">        bmwBuilder.setSequence(sequence);</span><br><span class="line">        <span class="type">BMWModel</span> <span class="variable">bmw</span> <span class="operator">=</span> (BMWModel)bmwBuilder.getCarModel();</span><br><span class="line">        bmw.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">奔驰车的引擎是这个声音的...</span><br><span class="line"></span><br><span class="line">奔驰车跑起来是这个样子的...</span><br><span class="line"></span><br><span class="line">奔驰车应该这样停车...</span><br><span class="line"></span><br><span class="line">宝马车的引擎是这个声音的...</span><br><span class="line"></span><br><span class="line">宝马车跑起来是这个样子的...</span><br><span class="line"></span><br><span class="line">宝马车应该这样停车...</span><br></pre></td></tr></table></figure>
+
+<p>看，同样运行顺序的宝马车也生产出来了，而且代码是不是比刚开始直接访问产品类（Procuct）简单了很多。我们在做项目时，经常会有一个共识：需求是无底洞，是无理性的，不可能你告诉它不增加需求就不增加，这4个过程（start、stop、alarm、engine boom）按照排列组合有很多种，××公司可以随意组合，它要什么顺序的车模我就必须生成什么顺序的车模，客户可是上帝！那我们不可能预知他们要什么顺序的模型呀，怎么办？封装一下，找一个导演，指挥各个事件的先后顺序，然后为每种顺序指定一个代码，你说一种我们立刻就给你生产处理，好方法，厉害！我们先修改一下类图</p>
+<p><img src="/img/builder-3.png"></p>
+<p>类图看着复杂了，但还是比较简单，我们增加了一个Director类，负责按照指定的顺序生产模型，其中方法说明如下：</p>
+<ul>
+<li>getABenzModel方法</li>
+</ul>
+<p>组建出A型号的奔驰车辆模型，其过程为只有启动（start）、停止（stop）方法，其他的引擎声音、喇叭都没有。</p>
+<ul>
+<li>getBBenzModel方法</li>
+</ul>
+<p>组建出B型号的奔驰车，其过程为先发动引擎（engine boom），然后启动，再然后停车，没有喇叭。</p>
+<ul>
+<li>getCBMWModel方法</li>
+</ul>
+<p>组建出C型号的宝马车，其过程为先喇叭叫一下（alarm），然后启动，再然后是停车，引擎不轰鸣。</p>
+<ul>
+<li>getDBMWModel方法</li>
+</ul>
+<p>组建出D型号的宝马车，其过程就一个启动，然后一路跑到黑，永动机，没有停止方法，没有喇叭，没有引擎轰鸣。</p>
+<p>其他的E型号、F型号……可以有很多，启动、停止、喇叭、引擎轰鸣这4个方法在这个类中可以随意地自由组合。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Director</span> &#123;</span><br><span class="line">     <span class="keyword">private</span> ArrayList&lt;String&gt; sequence = <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">     <span class="keyword">private</span> <span class="type">BenzBuilder</span> <span class="variable">benzBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BenzBuilder</span>();</span><br><span class="line">     <span class="keyword">private</span> <span class="type">BMWBuilder</span> <span class="variable">bmwBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BMWBuilder</span>();</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">      * A类型的奔驰车模型，先start，然后stop，其他什么引擎、喇叭一概没有</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="keyword">public</span> BenzModel <span class="title function_">getABenzModel</span><span class="params">()</span>&#123;</span><br><span class="line">             <span class="comment">//清理场景，这里是一些初级程序员不注意的地方</span></span><br><span class="line">             <span class="built_in">this</span>.sequence.clear();</span><br><span class="line">             <span class="comment">//ABenzModel的执行顺序</span></span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;start&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;stop&quot;</span>);</span><br><span class="line">             <span class="comment">//按照顺序返回一个奔驰车</span></span><br><span class="line">             <span class="built_in">this</span>.benzBuilder.setSequence(<span class="built_in">this</span>.sequence);</span><br><span class="line">             <span class="keyword">return</span> (BenzModel)<span class="built_in">this</span>.benzBuilder.getCarModel();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">      * B型号的奔驰车模型，是先发动引擎，然后启动，然后停止，没有喇叭</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="keyword">public</span> BenzModel <span class="title function_">getBBenzModel</span><span class="params">()</span>&#123;</span><br><span class="line">             <span class="built_in">this</span>.sequence.clear();</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;engine boom&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;start&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;stop&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.benzBuilder.setSequence(<span class="built_in">this</span>.sequence);</span><br><span class="line">             <span class="keyword">return</span> (BenzModel)<span class="built_in">this</span>.benzBuilder.getCarModel();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">      * C型号的宝马车是先按下喇叭（炫耀嘛），然后启动，然后停止</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="keyword">public</span> BMWModel <span class="title function_">getCBMWModel</span><span class="params">()</span>&#123;</span><br><span class="line">             <span class="built_in">this</span>.sequence.clear();</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;alarm&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;start&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;stop&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.bmwBuilder.setSequence(<span class="built_in">this</span>.sequence);</span><br><span class="line">             <span class="keyword">return</span> (BMWModel)<span class="built_in">this</span>.bmwBuilder.getCarModel();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">      * D类型的宝马车只有一个功能，就是跑，启动起来就跑，永远不停止</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="keyword">public</span> BMWModel <span class="title function_">getDBMWModel</span><span class="params">()</span>&#123;</span><br><span class="line">             <span class="built_in">this</span>.sequence.clear();</span><br><span class="line">             <span class="built_in">this</span>.sequence.add(<span class="string">&quot;start&quot;</span>);</span><br><span class="line">             <span class="built_in">this</span>.bmwBuilder.setSequence(<span class="built_in">this</span>.sequence);</span><br><span class="line">             <span class="keyword">return</span> (BMWModel)<span class="built_in">this</span>.benzBuilder.getCarModel();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">      * 这里还可以有很多方法，你可以先停止，然后再启动，或者一直停着不动，静态的嘛</span></span><br><span class="line"><span class="comment">      * 导演类嘛，按照什么顺序是导演说了算</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>顺便说一下，大家看一下程序中有很多this调用。这个我一般是这样要求项目组成员的，如果你要调用类中的成员变量或方法，需要在前面加上this关键字，不加也能正常地跑起来，但是不清晰，加上this关键字，我就是要调用本类中的成员变量或方法，而不是本方法中的一个变量。还有super方法也是一样，是调用父类的成员变量或者方法，那就加上这个关键字，不要省略，这要靠约束，还有就是程序员的自觉性，他要是死不悔改，那咱也没招。</p>
+<blockquote>
+<p><strong>注意</strong> 上面每个方法都有一个this.sequence.clear()，估计你一看就明白。ArrayList和HashMap如果定义成类的成员变量，那你在方法中的调用一定要做一个clear的动作，以防止数据混乱。</p>
+</blockquote>
+<p>有了这样一个导演类后，我们的场景类就更容易处理了，××公司要A类型的奔驰车1万辆，B类型的奔驰车100万辆，C类型的宝马车1000万辆，D类型的不需要，非常容易处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BatchClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Director</span> <span class="variable">director</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Director</span>();</span><br><span class="line">        <span class="comment">// 1万辆A类型的奔驰车</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;</span><br><span class="line">            director.getABenzModel().run();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 100万辆B类型的奔驰车</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1000000</span>; i++) &#123;</span><br><span class="line">            director.getBBenzModel().run();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 1000万辆C类型的宝马车</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10000000</span>; i++) &#123;</span><br><span class="line">            director.getCBMWModel().run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-建造者模式的定义"><a href="#2-建造者模式的定义" class="headerlink" title="2 建造者模式的定义"></a>2 建造者模式的定义</h3><p>建造者模式（Builder Pattern）也叫做生成器模式，其定义如下：</p>
+<p>Separate the construction of a complex object from its representation so that the same construction process can create different representations.（将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。）</p>
+<p>建造者模式的通用类图如图11-4所示。</p>
+<p><img src="/img/builder-4.png"></p>
+<p>图11-4 建造者模式通用类图</p>
+<p>在建造者模式中，有如下4个角色：</p>
+<ul>
+<li>Product产品类</li>
+</ul>
+<p>通常是实现了模板方法模式，也就是有模板方法和基本方法，这个参考第10章的模板方法模式。例子中的BenzModel和BMWModel就属于产品类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Product</span> &#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span>&#123;</span><br><span class="line">             <span class="comment">//独立业务处理</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Builder抽象建造者</li>
+</ul>
+<p>规范产品的组建，一般是由子类实现。例子中的CarBuilder就属于抽象建造者。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Builder &#123;    </span><br><span class="line">     //设置产品的不同部分，以获得不同的产品</span><br><span class="line">     public abstract void setPart();</span><br><span class="line">     //建造产品</span><br><span class="line">     public abstract Product buildProduct();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ConcreteBuilder具体建造者</li>
+</ul>
+<p>实现抽象类定义的所有方法，并且返回一个组建好的对象。例子中的BenzBuilder和BMWBuilder就属于具体建造者。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ConcreteProduct</span> <span class="keyword">extends</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">     <span class="keyword">private</span> <span class="type">Product</span> <span class="variable">product</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Product</span>();</span><br><span class="line">     <span class="comment">//设置产品零件</span></span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPart</span><span class="params">()</span>&#123;</span><br><span class="line">             <span class="comment">/*</span></span><br><span class="line"><span class="comment">              * 产品类内的逻辑处理</span></span><br><span class="line"><span class="comment">              */</span></span><br><span class="line">     &#125;  </span><br><span class="line">     <span class="comment">//组建一个产品</span></span><br><span class="line">     <span class="keyword">public</span> Product <span class="title function_">buildProduct</span><span class="params">()</span> &#123;</span><br><span class="line">             <span class="keyword">return</span> product;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Director导演类</li>
+</ul>
+<p>负责安排已有模块的顺序，然后告诉Builder开始建造，在上面的例子中就是我们的老大，××公司找到老大，说我要这个或那个类型的车辆模型，然后老大就把命令传递给我，我和我的团队就开始拼命地建造，于是一个项目建设完毕了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Director</span> &#123;</span><br><span class="line">     <span class="keyword">private</span> <span class="type">Builder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConcreteProduct</span>();</span><br><span class="line">     <span class="comment">//构建不同的产品</span></span><br><span class="line">     <span class="keyword">public</span> Product <span class="title function_">getAProduct</span><span class="params">()</span>&#123;</span><br><span class="line">             builder.setPart();</span><br><span class="line">             <span class="comment">/*</span></span><br><span class="line"><span class="comment">              * 设置不同的零件，产生不同的产品</span></span><br><span class="line"><span class="comment">              */</span></span><br><span class="line">             <span class="keyword">return</span> builder.buildProduct();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-建造者模式的应用"><a href="#3-建造者模式的应用" class="headerlink" title="3 建造者模式的应用"></a>3 建造者模式的应用</h3><h4 id="11-3-1-建造者模式的优点"><a href="#11-3-1-建造者模式的优点" class="headerlink" title="11.3.1 建造者模式的优点"></a>11.3.1 建造者模式的优点</h4><p>● 封装性</p>
+<p>使用建造者模式可以使客户端不必知道产品内部组成的细节，如例子中我们就不需要关心每一个具体的模型内部是如何实现的，产生的对象类型就是CarModel。</p>
+<p>● 建造者独立，容易扩展</p>
+<p>BenzBuilder和BMWBuilder是相互独立的，对系统的扩展非常有利。</p>
+<p>● 便于控制细节风险</p>
+<p>由于具体的建造者是独立的，因此可以对建造过程逐步细化，而不对其他的模块产生任何影响。</p>
+<h4 id="3-2-建造者模式的使用场景"><a href="#3-2-建造者模式的使用场景" class="headerlink" title="3.2 建造者模式的使用场景"></a>3.2 建造者模式的使用场景</h4><p>● 相同的方法，不同的执行顺序，产生不同的事件结果时，可以采用建造者模式。</p>
+<p>● 多个部件或零件，都可以装配到一个对象中，但是产生的运行结果又不相同时，则可以使用该模式。</p>
+<p>● 产品类非常复杂，或者产品类中的调用顺序不同产生了不同的效能，这个时候使用建造者模式非常合适。</p>
+<p>● 在对象创建过程中会使用到系统中的一些其他对象，这些对象在产品对象的创建过程中不易得到时，也可以采用建造者模式封装该对象的创建过程。该种场景只能是一个补偿方法，因为一个对象不容易获得，而在设计阶段竟然没有发觉，而要通过创建者模式柔化创建过程，本身已经违反设计的最初目标。</p>
+<h4 id="3-3-建造者模式的注意事项"><a href="#3-3-建造者模式的注意事项" class="headerlink" title="3.3 建造者模式的注意事项"></a>3.3 建造者模式的注意事项</h4><p>建造者模式关注的是零件类型和装配工艺（顺序），这是它与工厂方法模式最大不同的地方，虽然同为创建类模式，但是注重点不同。</p>
+<h3 id="4-建造者模式的扩展"><a href="#4-建造者模式的扩展" class="headerlink" title="4 建造者模式的扩展"></a>4 建造者模式的扩展</h3><p>已经不用扩展了，因为我们在汽车模型制造的例子中已经对建造者模式进行了扩展，引入了模板方法模式。可能大家会比较疑惑，为什么在其他介绍设计模式的书籍上创建者模式并不是这样说的？读者请注意，建造者模式中还有一个角色没有说明，就是零件，建造者怎么去建造一个对象？是零件的组装，组装顺序不同对象效能也不同，这才是建造者模式要表达的核心意义，而怎么才能更好地达到这种效果呢？引入模板方法模式是一个非常简单而有效的办法。</p>
+<p>大家看到这里估计就开始犯嘀咕了，这个建造者模式和工厂模式非常相似呀，是的，非常相似，但是记住一点你就可以游刃有余地使用了：建造者模式最主要的功能是基本方法的调用顺序安排，也就是这些基本方法已经实现了，通俗地说就是零件的装配，顺序不同产生的对象也不同；而工厂方法则重点是创建，创建零件是它的主要职责，组装顺序则不是它关心的。</p>
+<p>参考书籍：《设计模式之禅》</p>
+<p>源码：<a target="_blank" rel="noopener" href="https://github.com/mrxccc/DesignPatterns">设计模式</a></p>
+<blockquote>
+<p>其他设计模式介绍：</p>
+<p><a href="https://mrxccc.github.io//posts/89a20157.html">设计模式-工厂方法模式</a></p>
+<p><a href="https://mrxccc.github.io//posts/5a86ebac.html">设计模式-抽象工厂模式</a></p>
+<p><a href="https://mrxccc.github.io//posts/2a48474d.html">设计模式-建造者模式</a></p>
+</blockquote>
+<p>更多精彩内容：<a href="https://mrxccc.github.io/">mrxccc</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/2a48474d.html" data-id="cm49opopw003f8ou481wz0soc" data-title="设计模式-建造者模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/fa6e99b2.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          设计模式-单例模式介绍+8种实现方式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/2fab00f3.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">从服务化到云原生-配置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

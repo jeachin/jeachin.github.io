@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>IC开发入门常见问题 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="访问不到钥匙,文件等问题检查之前命令行是否用了 sudo或者之前是root, 现在用了其他用户 进入私钥目录1cd ~&#x2F;.config&#x2F;dfx&#x2F;identity&#x2F;  1.dfx deploy 运行报错可能是没有运行开发环境:  123dfx stop &amp;&amp; dfx start 或者 dfx stop &amp;&amp; dfx start --background或者 dfx s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IC开发入门常见问题">
+<meta property="og:url" content="https://mrxccc.github.io/posts/55bf785.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="访问不到钥匙,文件等问题检查之前命令行是否用了 sudo或者之前是root, 现在用了其他用户 进入私钥目录1cd ~&#x2F;.config&#x2F;dfx&#x2F;identity&#x2F;  1.dfx deploy 运行报错可能是没有运行开发环境:  123dfx stop &amp;&amp; dfx start 或者 dfx stop &amp;&amp; dfx start --background或者 dfx s">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T02:59:33.000Z">
+<meta property="article:modified_time" content="2024-12-04T09:00:22.677Z">
+<meta property="article:author" content="mrxccc">
+<meta property="article:tag" content="IC">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-dfinity开发入门常见问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/55bf785.html" class="article-date">
+  <time class="dt-published" datetime="2022-08-15T02:59:33.000Z" itemprop="datePublished">2022-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IC/">IC</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      IC开发入门常见问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="访问不到钥匙-文件等问题"><a href="#访问不到钥匙-文件等问题" class="headerlink" title="访问不到钥匙,文件等问题"></a>访问不到钥匙,文件等问题</h4><p>检查之前命令行是否用了 sudo<br>或者之前是root, 现在用了其他用户</p>
+<h4 id="进入私钥目录"><a href="#进入私钥目录" class="headerlink" title="进入私钥目录"></a>进入私钥目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.config/dfx/identity/</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-dfx-deploy-运行报错"><a href="#1-dfx-deploy-运行报错" class="headerlink" title="1.dfx deploy 运行报错"></a>1.dfx deploy 运行报错</h4><p>可能是没有运行开发环境: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dfx stop &amp;&amp; dfx start </span><br><span class="line">或者 dfx stop &amp;&amp; dfx start --background</span><br><span class="line">或者 dfx stop &amp;&amp; dfx start --clean (清除当前项目的状态)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-在原来canister发布新版本是否需要加上-–with-cycles-xxxx"><a href="#2-在原来canister发布新版本是否需要加上-–with-cycles-xxxx" class="headerlink" title="2.在原来canister发布新版本是否需要加上 –with-cycles&#x3D;xxxx"></a>2.在原来canister发布新版本是否需要加上 –with-cycles&#x3D;xxxx</h4><p>不需要</p>
+<h4 id="3-motoko-打印array"><a href="#3-motoko-打印array" class="headerlink" title="3.motoko 打印array"></a>3.motoko 打印array</h4><p>Debug.print(debug_show(arr));</p>
+<h4 id="4-motoko-语法检查"><a href="#4-motoko-语法检查" class="headerlink" title="4.motoko 语法检查"></a>4.motoko 语法检查</h4><p>dfx build –check</p>
+<h4 id="5-跨-Canister-调用是否有-Timeout-的机制？以防止某个调用不返回导致主调-Canister-无法停止。"><a href="#5-跨-Canister-调用是否有-Timeout-的机制？以防止某个调用不返回导致主调-Canister-无法停止。" class="headerlink" title="5.跨 Canister 调用是否有 Timeout 的机制？以防止某个调用不返回导致主调 Canister 无法停止。"></a>5.跨 Canister 调用是否有 Timeout 的机制？以防止某个调用不返回导致主调 Canister 无法停止。</h4><p>timeout 仅发生在对方子网下线的情况下，其它情况则需要等待对方返回，系统保证它终将返回，可能很久。</p>
+<h4 id="6-冻结时，如果有未返回的跨-Canister-调用会怎样？会等待返回吗？"><a href="#6-冻结时，如果有未返回的跨-Canister-调用会怎样？会等待返回吗？" class="headerlink" title="6.冻结时，如果有未返回的跨 Canister 调用会怎样？会等待返回吗？"></a>6.冻结时，如果有未返回的跨 Canister 调用会怎样？会等待返回吗？</h4><p>stopping 状态是就是等待所有已发出的调用返回，所有都返回了才能进入 stopped 状态</p>
+<h4 id="7-跨-Canister-调用，如何在本地环境调试？可以把主链非自己所有的-Canister-部署到本地环境吗？还是必须自己"><a href="#7-跨-Canister-调用，如何在本地环境调试？可以把主链非自己所有的-Canister-部署到本地环境吗？还是必须自己" class="headerlink" title="7.跨 Canister 调用，如何在本地环境调试？可以把主链非自己所有的 Canister 部署到本地环境吗？还是必须自己"></a>7.跨 Canister 调用，如何在本地环境调试？可以把主链非自己所有的 Canister 部署到本地环境吗？还是必须自己</h4><p>是的，需要把依赖的 canister 自己部署一遍</p>
+<h4 id="8-为什么在例子中，发送了消息-Cycles-balance-没有消费？"><a href="#8-为什么在例子中，发送了消息-Cycles-balance-没有消费？" class="headerlink" title="8.为什么在例子中，发送了消息 Cycles.balance 没有消费？"></a>8.为什么在例子中，发送了消息 <code>Cycles.balance</code> 没有消费？</h4><p>本地起的环境运行 canister 都不消耗 cycles</p>
+<h4 id="9-如果多个人并发调用一个-Canister-中的-Update-方法，是需要排队等待吗？"><a href="#9-如果多个人并发调用一个-Canister-中的-Update-方法，是需要排队等待吗？" class="headerlink" title="9.如果多个人并发调用一个 Canister 中的 Update 方法，是需要排队等待吗？"></a>9.如果多个人并发调用一个 Canister 中的 Update 方法，是需要排队等待吗？</h4><p>发给 canister 的消息都是先进入队列，然后依次执行</p>
+<h4 id="10-HttpRequest-HttpResponse-这些类型是否可以从某些标准库-import-过来？"><a href="#10-HttpRequest-HttpResponse-这些类型是否可以从某些标准库-import-过来？" class="headerlink" title="10.HttpRequest&#x2F; HttpResponse 这些类型是否可以从某些标准库 import 过来？"></a>10.<code>HttpRequest</code>&#x2F; <code>HttpResponse</code> 这些类型是否可以从某些标准库 <code>import</code> 过来？</h4><p>目前没在标准库里</p>
+<h4 id="11-没有-Blob-→-Nat8-的标准方法吗？"><a href="#11-没有-Blob-→-Nat8-的标准方法吗？" class="headerlink" title="11.没有 Blob → [Nat8] 的标准方法吗？"></a>11.没有 <code>Blob</code> → <code>[Nat8]</code> 的标准方法吗？</h4><p>Blob.toArray(blob)</p>
+<h4 id="12-http-request的actor部署在主网之后为什么是显示“Body-does-not-pass-verification”"><a href="#12-http-request的actor部署在主网之后为什么是显示“Body-does-not-pass-verification”" class="headerlink" title="12.http_request的actor部署在主网之后为什么是显示“Body does not pass verification”"></a>12.http_request的actor部署在主网之后为什么是显示“Body does not pass verification”</h4><p>用这个访问 CANISTERID.raw.ic0.app</p>
+<h4 id="13-运行报错The-Replica-returned-an-error-code-5-message-“Canister-xxxx-exceeded-the-cycles-limit-for-single-message-execution-”"><a href="#13-运行报错The-Replica-returned-an-error-code-5-message-“Canister-xxxx-exceeded-the-cycles-limit-for-single-message-execution-”" class="headerlink" title="13.运行报错The Replica returned an error: code 5, message: “Canister xxxx exceeded the cycles limit for single message execution.”"></a>13.运行报错The Replica returned an error: code 5, message: “Canister xxxx exceeded the cycles limit for single message execution.”</h4><p>检查下程序是不是有死循环</p>
+<h4 id="14-升级dfx后报错问题"><a href="#14-升级dfx后报错问题" class="headerlink" title="14.升级dfx后报错问题"></a>14.升级dfx后报错问题</h4><p>检查后台运行的dfx start是否还在旧版本运行</p>
+<h4 id="15-降级dfx版本到0-8-4版本"><a href="#15-降级dfx版本到0-8-4版本" class="headerlink" title="15.降级dfx版本到0.8.4版本"></a>15.降级dfx版本到0.8.4版本</h4><p>DFX_VERSION&#x3D;0.8.4 sh -ci “$(curl -fsSL <a target="_blank" rel="noopener" href="https://sdk.dfinity.org/install.sh">https://sdk.dfinity.org/install.sh</a>)”</p>
+<h4 id="16-Warning-The-versionofDFXused-0-9-2-is-different-than-the-version-beingrun-0-8-4"><a href="#16-Warning-The-versionofDFXused-0-9-2-is-different-than-the-version-beingrun-0-8-4" class="headerlink" title="16.Warning:The versionofDFXused(0.9.2) is different than the version beingrun(0.8.4"></a>16.Warning:The versionofDFXused(0.9.2) is different than the version beingrun(0.8.4</h4><p>This might happen because your dfx.json specifies an older version, or DFX_VERSION is set in your environment.<br>删除或者修改 dfx.json里面的版本version</p>
+<h4 id="17-playground-上部署的内容是否会有销毁时间"><a href="#17-playground-上部署的内容是否会有销毁时间" class="headerlink" title="17.playground 上部署的内容是否会有销毁时间"></a>17.playground 上部署的内容是否会有销毁时间</h4><p>是的</p>
+<h4 id="18-是否有类似javascrpt的Promise-all的方法"><a href="#18-是否有类似javascrpt的Promise-all的方法" class="headerlink" title="18.是否有类似javascrpt的Promise.all的方法"></a>18.是否有类似javascrpt的Promise.all的方法</h4><p>目前没有</p>
+<h4 id="19-TEXT-连接用什么符号"><a href="#19-TEXT-连接用什么符号" class="headerlink" title="19.TEXT 连接用什么符号"></a>19.TEXT 连接用什么符号</h4><p>用#</p>
+<h4 id="20-cycles不够了怎么办"><a href="#20-cycles不够了怎么办" class="headerlink" title="20. cycles不够了怎么办?"></a>20. cycles不够了怎么办?</h4><p>用命令行把ICP转成cycles充值: dfx ledger top-up -h提示<br>或者在nns钱包canister里面,link到canister后top-up</p>
+<h4 id="21-canister-query方法是否支持异步调用"><a href="#21-canister-query方法是否支持异步调用" class="headerlink" title="21. canister query方法是否支持异步调用"></a>21. canister query方法是否支持异步调用</h4><p>不支持,会报错</p>
+<h4 id="21-大数据存储"><a href="#21-大数据存储" class="headerlink" title="21. 大数据存储"></a>21. 大数据存储</h4><p><a target="_blank" rel="noopener" href="https://github.com/PrimLabs/Bucket">https://github.com/PrimLabs/Bucket</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/55bf785.html" data-id="cm49opopi00258ou4h8zch8i2" data-title="IC开发入门常见问题" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IC/" rel="tag">IC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/57b9124b.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          区块链共识机制：POW、POA、POS、DPOS、PBFT、DBFT
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/e89744dc.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">IC区块链与经济模型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

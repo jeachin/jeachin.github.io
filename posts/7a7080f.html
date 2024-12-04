@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Gitlab-runner的容器化安装与使用 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="gitlab-runner有多种安装方式，具体详见 gitlab-runner安装 ，本文采用的docker的方式进行runner的部署 为什么用docker安装gitlab-runner? 1.runner机器经常改变 2.每个作业都处于干净的环境中，没有过去的历史记录。并发任务执行正常，因为每个构建都有自己的 Docker 引擎实例，因此它们不会相互冲突  开始安装：前提安装好docker环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gitlab-runner的容器化安装与使用">
+<meta property="og:url" content="https://mrxccc.github.io/posts/7a7080f.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="gitlab-runner有多种安装方式，具体详见 gitlab-runner安装 ，本文采用的docker的方式进行runner的部署 为什么用docker安装gitlab-runner? 1.runner机器经常改变 2.每个作业都处于干净的环境中，没有过去的历史记录。并发任务执行正常，因为每个构建都有自己的 Docker 引擎实例，因此它们不会相互冲突  开始安装：前提安装好docker环境">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-03T04:57:44.000Z">
+<meta property="article:modified_time" content="2024-12-04T09:00:22.635Z">
+<meta property="article:author" content="mrxccc">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Gitlab-runner的容器化安装与使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/7a7080f.html" class="article-date">
+  <time class="dt-published" datetime="2020-11-03T04:57:44.000Z" itemprop="datePublished">2020-11-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/gitlab-ci/">gitlab-ci</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Gitlab-runner的容器化安装与使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>gitlab-runner有多种安装方式，具体详见 <a target="_blank" rel="noopener" href="https://docs.gitlab.com/runner/install/index.html">gitlab-runner安装</a> ，本文采用的docker的方式进行runner的部署</p>
+<h2 id="为什么用docker安装gitlab-runner"><a href="#为什么用docker安装gitlab-runner" class="headerlink" title="为什么用docker安装gitlab-runner?"></a>为什么用docker安装gitlab-runner?</h2><ul>
+<li>1.runner机器经常改变</li>
+<li>2.每个作业都处于干净的环境中，没有过去的历史记录。并发任务执行正常，因为每个构建都有自己的 Docker 引擎实例，因此它们不会相互冲突</li>
+</ul>
+<h2 id="开始安装："><a href="#开始安装：" class="headerlink" title="开始安装："></a>开始安装：</h2><p>前提安装好docker环境</p>
+<h3 id="1-创建并启动gitlab-runner容器"><a href="#1-创建并启动gitlab-runner容器" class="headerlink" title="1.创建并启动gitlab-runner容器"></a>1.创建并启动gitlab-runner容器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> docker run -d --name gitlab-runner --restart always   </span><br><span class="line">    -v /var/run/docker.sock:/var/run/docker.sock   </span><br><span class="line">    -v /srv/gitlab-runner/config:/etc/gitlab-runner   </span><br><span class="line">    -v /home/gitlab-runner/shell:/home/gitlab-runner/shell   </span><br><span class="line">    -v /root/build_cache:/cache   gitlab/gitlab-runner:latest</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ol>
+<li>第一个 -v 实现docker.sock的挂载（因为后续要实现docker in docker的使用，即 docker executor）；</li>
+<li>第二个 -v 实现gitlab-runner的配置挂载（可选）</li>
+<li>第三个 -v 实现gitlab-runner cache目录的挂载（可选），cache相关请参考 docker executor 下的cache部分。</li>
+<li>第四个 -v 实现本地shell目录挂载（可选）</li>
+</ol>
+<p>修改gitlab-runner时区为宿主机时区，因为有可能在gitlab-容器中使用到时间，可以执行该命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker cp /etc/localtime gitlab-runner:/etc/localtime</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-注册runner"><a href="#2-注册runner" class="headerlink" title="2.注册runner"></a>2.注册runner</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker exec gitlab-runner gitlab-runner register -n \</span><br><span class="line">       --url https://git-pd.megvii-inc.com/ \</span><br><span class="line">       --registration-token qZXDG-z3uPGvsVn-5SNx \</span><br><span class="line">       --tag-list runInDk \</span><br><span class="line">       --executor docker \</span><br><span class="line">       --docker-image mrxccc/maven-jdk8-docker:latest  \</span><br><span class="line">       --docker-volumes /root/.m2:/root/.m2 \</span><br><span class="line">       --docker-volumes /root/.npm:/root/.npm \</span><br><span class="line">       --docker-volumes /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">       --docker-volumes /home/gitlab-runner/shell:/home/gitlab-runner/shell \</span><br><span class="line">       --description &quot;runInDk&quot;</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li>url 为 gitlab的地址；</li>
+<li>registration-token 为项目下的token，可通过 gitlab -&gt; project -&gt; settings -&gt; ci&#x2F;cd 下获得</li>
+<li>executor，使用 docker 作为 executor;</li>
+<li>description 为 runner 的描述信息，请自定义；</li>
+<li>docker-image 为 executor 所采用的自己构建的 docker 镜像，该镜像有maven、java、docker、bash环境（会被gitlab-ci.yml中的配置覆盖）。</li>
+<li>docker-volumes ，因采用 “docker executor” ，必须挂载宿主机的docker.sock，</li>
+<li>挂载.m2文件夹，是为了避免maven每次编译项目时都重新下载jar包。（后面.gitlab-ci.yml文件中使用了maven镜像）</li>
+</ul>
+<blockquote>
+<p>挂载.m2文件夹这一步很重要，不然每次下载依赖包会特别浪费时间</p>
+<p>如果想要在docker in docker,也就是在docker容器中使用宿主机的docker，要挂载docker.sock文件，关于为什么要挂载docker.sock，可以参考这篇文章：<a href="https://mrxccc.github.io/4d3646a8.html">docker系列-docker.sock探究</a></p>
+</blockquote>
+<p>mrxccc&#x2F;maven-jdk8-docker镜像的dockerfile:</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> maven:<span class="number">3.6</span>.<span class="number">0</span>-jdk-<span class="number">8</span>-alpine</span><br><span class="line"><span class="keyword">MAINTAINER</span> mrxccc@qq.com</span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment">#安装docker</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> http://dl-cdn.alpinelinux.org/alpine/latest-stable/community &gt;&gt; /etc/apk/repositories &amp;&amp;\</span></span><br><span class="line"><span class="language-bash">        apk update &amp;&amp;\</span></span><br><span class="line"><span class="language-bash">        apk add docker --no-cache &amp;&amp;\</span></span><br><span class="line"><span class="language-bash">        apk add openrc --no-cache</span></span><br><span class="line"><span class="comment">#设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apk add --no-cache tzdata &amp;&amp;\</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="variable">$TZ</span> &gt; /etc/timezone &amp;&amp;\</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/cache/apk/*</span></span><br><span class="line"><span class="comment">#安装sudo</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apk add <span class="built_in">sudo</span> --no-cache</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> service docker start</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-编写gitlab-ci"><a href="#3-编写gitlab-ci" class="headerlink" title="3.编写gitlab-ci"></a>3.编写gitlab-ci</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">MAVEN_CLI_OPTS:</span> <span class="string">&quot;-s ./mvn-settings.xml --batch-mode&quot;</span></span><br><span class="line">  <span class="attr">SOFT_VERSION:</span> <span class="string">&#x27;1.0&#x27;</span></span><br><span class="line">  <span class="attr">SOFT_VERSION_EXT:</span> <span class="string">&#x27;alpha&#x27;</span></span><br><span class="line">  <span class="attr">NEW_SOFT_VERSION_EXT:</span> <span class="string">&#x27;beta&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="attr">stages:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">verify</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">build</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">dockerpush</span></span><br><span class="line"> </span><br><span class="line"><span class="attr">before_script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">pwd</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">#单元测试</span></span><br><span class="line"><span class="attr">unit-test:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">verify</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mvn</span> <span class="string">$MAVEN_CLI_OPTS</span> <span class="string">test</span></span><br><span class="line">  <span class="attr">tags:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">runInDk</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">#java编译打包docker镜像</span></span><br><span class="line"><span class="attr">java-package:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">build</span></span><br><span class="line">  <span class="attr">tags:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">runInDk</span></span><br><span class="line">  <span class="attr">cache:</span></span><br><span class="line">    <span class="attr">key:</span> <span class="string">$&#123;CI_PIPELINE_ID&#125;</span> <span class="comment">#根据pipeline id缓存</span></span><br><span class="line">    <span class="attr">paths:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">$&#123;CI_PROJECT_DIR&#125;</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">  	<span class="comment">#registry 是仓库名,imagename是镜像名，CI_PIPELINE_ID是pipeline id</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span> <span class="string">build</span> <span class="string">registry/imagename-$&#123;CI_PIPELINE_ID&#125;:$SOFT_VERSION</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">#push镜像</span></span><br><span class="line"><span class="attr">docker-push:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">dockerpush</span></span><br><span class="line">  <span class="attr">tags:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">runInDk</span></span><br><span class="line">  <span class="attr">cache:</span></span><br><span class="line">    <span class="attr">key:</span> <span class="string">$&#123;CI_PIPELINE_ID&#125;</span></span><br><span class="line">    <span class="attr">paths:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">$&#123;CI_PROJECT_DIR&#125;</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="comment">#registry 是仓库名,imagename是镜像名，CI_PIPELINE_ID是pipeline id</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span> <span class="string">push</span> <span class="string">registry/imagename-$&#123;CI_PIPELINE_ID&#125;:$SOFT_VERSION</span></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>更多参数操作，可以用：sudo docker exec gitlab-runner gitlab-runner register –help 进行查看</p>
+</blockquote>
+<p>更多精彩内容：<a href="https://mrxccc.github.io/">mrxccc</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/7a7080f.html" data-id="cm49opop0000w8ou4gosn8l7a" data-title="Gitlab-runner的容器化安装与使用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/52649bb.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Gitlab Runner的安装与配置
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/66a907b1.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Gitlab-CICD最简单明了的入门教程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+          <li>
+            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
+          </li>
+        
+          <li>
+            <a href="/posts/af3ae847.html">IC 入门课第一课</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
