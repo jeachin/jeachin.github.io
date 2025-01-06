@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>solidity语言特性之数据类型 | 小C的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="这里拿java来进行对比一下，java和solidity都是面向对象的编程语言，也都是静态类型的。所以写过java的再写solidity上手会比较快。因为很多概念都是相通的，但是也不要大意，solidity还是有些小坑在里面的。我们需要理清楚这些数据类型在使用时的注意事项、操作技巧、变量在赋值传参时是值拷贝还是引用传递，以及如何省钱？ 一、bool、uint(uint8、uint16、uint32">
+<meta property="og:type" content="article">
+<meta property="og:title" content="solidity语言特性之数据类型">
+<meta property="og:url" content="https://mrxccc.github.io/posts/undefined.html">
+<meta property="og:site_name" content="小C的博客">
+<meta property="og:description" content="这里拿java来进行对比一下，java和solidity都是面向对象的编程语言，也都是静态类型的。所以写过java的再写solidity上手会比较快。因为很多概念都是相通的，但是也不要大意，solidity还是有些小坑在里面的。我们需要理清楚这些数据类型在使用时的注意事项、操作技巧、变量在赋值传参时是值拷贝还是引用传递，以及如何省钱？ 一、bool、uint(uint8、uint16、uint32">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-06T10:58:40.000Z">
+<meta property="article:modified_time" content="2025-01-06T11:06:23.982Z">
+<meta property="article:author" content="mrxccc">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="小C的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小C的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mrxccc.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-solidity语言特性之数据类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/undefined.html" class="article-date">
+  <time class="dt-published" datetime="2025-01-06T10:58:40.000Z" itemprop="datePublished">2025-01-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      solidity语言特性之数据类型
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这里拿java来进行对比一下，java和solidity都是面向对象的编程语言，也都是静态类型的。所以写过java的再写solidity上手会比较快。因为很多概念都是相通的，但是也不要大意，solidity还是有些小坑在里面的。我们需要理清楚这些数据类型在使用时的注意事项、操作技巧、变量在赋值传参时是值拷贝还是引用传递，以及如何省钱？</p>
+<h3 id="一、bool、uint-uint8、uint16、uint32、…、uint256"><a href="#一、bool、uint-uint8、uint16、uint32、…、uint256" class="headerlink" title="一、bool、uint(uint8、uint16、uint32、…、uint256)"></a>一、bool、uint(uint8、uint16、uint32、…、uint256)</h3><p>基础数据类型没什么看头，和java差不多。</p>
+<h3 id="二、address-、address-payable"><a href="#二、address-、address-payable" class="headerlink" title="二、address 、address payable"></a>二、address 、address payable</h3><p>address类型是solidity自带的数据类型，类似java中自带的类。address类型有很多常用的成员函数。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义address类型</span></span><br><span class="line">address _walletAddress = <span class="number">0x356faDD245d35ff8F1a207aC83BE7EEa911abeEE</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// address类型的成员函数 把它想成java的类和对象</span></span><br><span class="line">_walletAddress .<span class="title function_">balance</span>() 返回地址余额</span><br><span class="line">_walletAddress .<span class="title function_">transfer</span>()  向地址发送以太币，失败时抛出异常。只会使用<span class="number">2300</span>的gas</span><br><span class="line">_walletAddress .<span class="title function_">send</span>() 像地址发送以太币，失败时返回<span class="literal">false</span>.<span class="property">gas</span> 使用无限制</span><br><span class="line"></span><br><span class="line"><span class="comment">// 特殊类函数</span></span><br><span class="line">&lt;address&gt;.<span class="title function_">call</span>() :通常用于合约交互，直接控制编码的方式调用合约函数。</span><br><span class="line">会切换上下文，附加gas，附加value。 addr.<span class="property">call</span>&#123;<span class="attr">value</span>:<span class="number">1</span> ether&#125;(””) 等价于transfer（<span class="number">1</span> ether），但是没有gas限制。失败不是发生异常，而是返回<span class="literal">false</span>，所以一定要检查返回值。</span><br><span class="line">&lt;address&gt;.<span class="title function_">delegatecall</span>() </span><br><span class="line">保持上下文，不支持附加value&#123;<span class="attr">value</span>: &#125; </span><br></pre></td></tr></table></figure>
+
+<h3 id="三、合约类型"><a href="#三、合约类型" class="headerlink" title="三、合约类型"></a>三、合约类型</h3><p>solidity中的contract就和java中class关键字一样。都是用来定义类型的，可以理解为合约就是java中的类。合约默认继承address，所以可以将显示转为address类型，这样就能使用address类型中的成员函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">address(this).balance() </span><br><span class="line">address(this).transfer(to,amount)</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、数组类型"><a href="#四、数组类型" class="headerlink" title="四、数组类型"></a>四、数组类型</h3><p>1、数组的循环</p>
+<p>和java不一样，java中可以直接遍历一个超大的数组，而solidity中遍历超大型数组则无法直接遍历，需要点小技巧。</p>
+<p>2<strong>、数组如何删除某个元素？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function remove(uint index) public &#123;</span><br><span class="line">    // 获取数组长度    </span><br><span class="line">		uint len = numbers.length;</span><br><span class="line">    // 用最后一个元素来覆盖index的数据实现删除效果。</span><br><span class="line">		if( index == len -1)&#123;</span><br><span class="line">        numbers.pop()</span><br><span class="line">        break;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        numbers[index] = numbers[len - 1]</span><br><span class="line">        numbers.pop()</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五、变量传参和赋值"><a href="#五、变量传参和赋值" class="headerlink" title="五、变量传参和赋值"></a>五、变量传参和赋值</h3><p>和其他任何编程语言一样，在对变量进行赋值或传参时需要意识到当前是<strong>值拷贝还是引用传递(传递指针)</strong></p>
+<p><strong>那在solidity中赋值传参时，到底进行的是值拷贝？还是传递指针？我们该如何区分呢？</strong></p>
+<p>简单来说，在Solidity中，所有的基础数据类型（如 <strong><code>uint</code><strong>、</strong><code>bool</code></strong> 和 <strong><code>address</code></strong> 等）在赋值传参都是值拷贝。</p>
+<p>而其他非基础数据类型（也称为引用类型），比如**<code>数组[]、struct 和 mapping</code>** ，在赋值或传参时是值拷贝还是**引用传递(传递指针)**取决于两者的类型是否一样。</p>
+<p><strong>在使用引用类型时，我们必须使用位置存储关键字（memory，storage，calldata）来指定数据存储的位置，否则无法编译通过！有且只有类成员变量无需指定，因为它们默认是storage。我们的合约类型是不需要指定存储关键字的，因为他默认就是storage。</strong></p>
+<p>下面，我们用实际案例来演示，引用类型之间传参赋值到底是**引用传递(传递指针)**还是值拷贝？</p>
+<p><strong>总结</strong>：相同类型之间的赋值是引用传递，其余都是值拷贝。其中<strong>sotrage 到 storage 的赋值是值拷贝</strong></p>
+<p>以下是引用传递</p>
+<p>1、memory和memory之间的赋值是引用传递。</p>
+<p>2、storage和local storage之间的赋值是引用传递。</p>
+<p>以下是值拷贝</p>
+<p>1、storage和memory之间的赋值是值拷贝，反过来memory赋值给storage是不行的！</p>
+<p><strong>2、sotrage 到 storage 的赋值是值拷贝</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract memorytest&#123;</span><br><span class="line">    uint public a ;</span><br><span class="line">    uint256[] public b ;</span><br><span class="line">    uint256[] public c ;</span><br><span class="line">    </span><br><span class="line">    //情况1：值类型的都是值拷贝</span><br><span class="line">    function add1(uint t) private&#123;</span><br><span class="line">        // 对t的修改不会影响到a</span><br><span class="line">        a = t; </span><br><span class="line">        t = 3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAdd1() public &#123;</span><br><span class="line">        add1(2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //情况2：memory和memory之间的赋值是引用</span><br><span class="line">    function add2(uint256[] memory t) private&#123;</span><br><span class="line">        b = t;</span><br><span class="line">        // 对t的修改不会影响到b，但是会影响到temp</span><br><span class="line">        t[0] = 999;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAdd2() public returns(uint256[] memory temp ) &#123;</span><br><span class="line">        uint256[] memory temp = new uint256[](3);</span><br><span class="line">        temp[0] = 100;</span><br><span class="line">        temp[1] = 200;</span><br><span class="line">        temp[1] = 300;</span><br><span class="line">        add2(temp);</span><br><span class="line">        return temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 情况3： storage和storage之间的赋值是引用传递</span><br><span class="line">    function add3(uint256[] storage cc) private&#123;</span><br><span class="line">        uint256[] storage tt;</span><br><span class="line">        tt = cc; //对tt的操作会影响到c</span><br><span class="line">        tt[0]= 222; </span><br><span class="line"></span><br><span class="line">        //把tt赋值给b storage和sotrage之间的赋值</span><br><span class="line">        b = tt; </span><br><span class="line">        b[0] = 333; //对b的改变是否会对tt改变是否会影响c的值？ c[0]是333 还是222？</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    function testAdd3() public &#123;</span><br><span class="line">        c = new uint256[](3);</span><br><span class="line">        c[0] = 100;</span><br><span class="line">        c[1] = 200;</span><br><span class="line">        c[2] = 300;    </span><br><span class="line">        add3(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //情况4： sotrage和memory之间的赋值是值传递</span><br><span class="line">    function add4(uint256[] memory c) private&#123;</span><br><span class="line">        c[0] = 888;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAdd4() public &#123;</span><br><span class="line">        c = new uint256[](3);</span><br><span class="line">        c[0] = 100;</span><br><span class="line">        c[1] = 200;</span><br><span class="line">        c[2] = 300;   </span><br><span class="line">        add4(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //情况5： memory和storage之间是无法传递的</span><br><span class="line">    // function add5(uint256[] storage c) private&#123;</span><br><span class="line">    //     c[0] = 888;// 对c的修改 无法影响到cc</span><br><span class="line">    // &#125;</span><br><span class="line">    // function testAdd5() public returns(uint256[] memory cc) &#123;</span><br><span class="line">    //     uint256[] memory cc = new uint256[](3);</span><br><span class="line">    //     cc[0] = 100;</span><br><span class="line">    //     cc[1] = 200;</span><br><span class="line">    //     cc[2] = 300;   </span><br><span class="line">    //     add5(cc);</span><br><span class="line">    //     return cc;</span><br><span class="line">    // &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="六、如何省钱？"><a href="#六、如何省钱？" class="headerlink" title="六、如何省钱？"></a>六、如何省钱？</h3><p>花不花gas取决于两个层面，一是你有没有修改<strong>storage变量</strong>的状态？二是你函数调用有没有声明为pure或者view。两个条件都需要满足，否则你调用一次函数就会花一次钱。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 会花gas</span><br><span class="line">function iterateMapping(uint256 startIndex) public &#123;</span><br><span class="line">    for (uint256 i = startIndex; i &lt; endIndex; i++) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 不会花gas</span><br><span class="line">function iterateMapping2(uint256 startIndex) public view &#123;</span><br><span class="line">    uint256 endIndex2 = startIndex+ 10 ;</span><br><span class="line">    for (uint256 i = startIndex; i &lt; endIndex2; i++) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2023-5-12</p>
+<p>在solidity中，用户调用的你的函数花不花gas主要取决于两个条件，有没有修改状态和你的函数是不是pure和view函数。这两个条件必须同时满足时，用户调用你的函数才不会花gas，否则要花gas。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 会花gas</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">iterateMapping</span>(<span class="params">uint256 startIndex</span>) public &#123;</span><br><span class="line">      <span class="keyword">for</span> (uint256 i = startIndex; i &lt; endIndex; i++) &#123;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 不会花gas</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">iterateMapping2</span>(<span class="params">uint256 startIndex</span>) public view &#123;</span><br><span class="line">      uint256 endIndex2 = startIndex+ <span class="number">10</span> ;</span><br><span class="line">      <span class="keyword">for</span> (uint256 i = startIndex; i &lt; endIndex2; i++) &#123;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>那那些情况是属于修改状态呢？除了修改sotrage类型的变量是一定是修改状态外，以下几种情况也是会修改状态产生gas的。</p>
+<p>1、修改stroage状态变量</p>
+<p>2、发出事件 emit event</p>
+<p>3、创建合约、销毁合约selfdestruct</p>
+<p>4、支付send transfer操作</p>
+<p>那pure和view这两个有什么区别吗？这两个关键字在消耗gas层面上都是不花gas的，区别主要在于业务上。pure函数更多的是工具函数，用pure函数修饰的函数往往只是提供工具，它不进行读状态变量。而view函数主要用在我们的业务函数里，业务函数一般要对状态变量进行读取的。</p>
+<p>下面对pure和view这俩做一个对比，</p>
+<h1 id="solidity语言特性之数据类型"><a href="#solidity语言特性之数据类型" class="headerlink" title="solidity语言特性之数据类型"></a>solidity语言特性之数据类型</h1><p>这里拿java来进行对比一下，java和solidity都是面向对象的编程语言，也都是静态类型的。所以写过java的再写solidity上手会比较快。因为很多概念都是相通的，但是也不要大意，solidity还是有些小坑在里面的。我们需要理清楚这些数据类型在使用时的注意事项、操作技巧、变量在赋值传参时是值拷贝还是引用传递，以及如何省钱？</p>
+<h3 id="一、bool、uint-uint8、uint16、uint32、…、uint256-1"><a href="#一、bool、uint-uint8、uint16、uint32、…、uint256-1" class="headerlink" title="一、bool、uint(uint8、uint16、uint32、…、uint256)"></a>一、bool、uint(uint8、uint16、uint32、…、uint256)</h3><p>基础数据类型没什么看头，和java差不多。</p>
+<h3 id="二、address-、address-payable-1"><a href="#二、address-、address-payable-1" class="headerlink" title="二、address 、address payable"></a>二、address 、address payable</h3><p>address类型是solidity自带的数据类型，类似java中自带的类。address类型有很多常用的成员函数。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义address类型</span></span><br><span class="line">address _walletAddress = <span class="number">0x356faDD245d35ff8F1a207aC83BE7EEa911abeEE</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// address类型的成员函数 把它想成java的类和对象</span></span><br><span class="line">_walletAddress .<span class="title function_">balance</span>() 返回地址余额</span><br><span class="line">_walletAddress .<span class="title function_">transfer</span>()  向地址发送以太币，失败时抛出异常。只会使用<span class="number">2300</span>的gas</span><br><span class="line">_walletAddress .<span class="title function_">send</span>() 像地址发送以太币，失败时返回<span class="literal">false</span>.<span class="property">gas</span> 使用无限制</span><br><span class="line"></span><br><span class="line"><span class="comment">// 特殊类函数</span></span><br><span class="line">&lt;address&gt;.<span class="title function_">call</span>() :通常用于合约交互，直接控制编码的方式调用合约函数。</span><br><span class="line">会切换上下文，附加gas，附加value。 addr.<span class="property">call</span>&#123;<span class="attr">value</span>:<span class="number">1</span> ether&#125;(””) 等价于transfer（<span class="number">1</span> ether），但是没有gas限制。失败不是发生异常，而是返回<span class="literal">false</span>，所以一定要检查返回值。</span><br><span class="line">&lt;address&gt;.<span class="title function_">delegatecall</span>() </span><br><span class="line">保持上下文，不支持附加value&#123;<span class="attr">value</span>: &#125; </span><br></pre></td></tr></table></figure>
+
+<h3 id="三、合约类型-1"><a href="#三、合约类型-1" class="headerlink" title="三、合约类型"></a>三、合约类型</h3><p>solidity中的contract就和java中class关键字一样。都是用来定义类型的，可以理解为合约就是java中的类。合约默认继承address，所以可以将显示转为address类型，这样就能使用address类型中的成员函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">address(this).balance() </span><br><span class="line">address(this).transfer(to,amount)</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、数组类型-1"><a href="#四、数组类型-1" class="headerlink" title="四、数组类型"></a>四、数组类型</h3><p>1、数组的循环</p>
+<p>和java不一样，java中可以直接遍历一个超大的数组，而solidity中遍历超大型数组则无法直接遍历，需要点小技巧。</p>
+<p>2<strong>、数组如何删除某个元素？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function remove(uint index) public &#123;</span><br><span class="line">    // 获取数组长度    </span><br><span class="line">		uint len = numbers.length;</span><br><span class="line">    // 用最后一个元素来覆盖index的数据实现删除效果。</span><br><span class="line">		if( index == len -1)&#123;</span><br><span class="line">        numbers.pop()</span><br><span class="line">        break;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        numbers[index] = numbers[len - 1]</span><br><span class="line">        numbers.pop()</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五、变量传参和赋值-1"><a href="#五、变量传参和赋值-1" class="headerlink" title="五、变量传参和赋值"></a>五、变量传参和赋值</h3><p>和其他任何编程语言一样，在对变量进行赋值或传参时需要意识到当前是<strong>值拷贝还是引用传递(传递指针)</strong></p>
+<p><strong>那在solidity中赋值传参时，到底进行的是值拷贝？还是传递指针？我们该如何区分呢？</strong></p>
+<p>简单来说，在Solidity中，所有的基础数据类型（如 <strong><code>uint</code><strong>、</strong><code>bool</code></strong> 和 <strong><code>address</code></strong> 等）在赋值传参都是值拷贝。</p>
+<p>而其他非基础数据类型（也称为引用类型），比如**<code>数组[]、struct 和 mapping</code>** ，在赋值或传参时是值拷贝还是**引用传递(传递指针)**取决于两者的类型是否一样。</p>
+<p><strong>在使用引用类型时，我们必须使用位置存储关键字（memory，storage，calldata）来指定数据存储的位置，否则无法编译通过！有且只有类成员变量无需指定，因为它们默认是storage。我们的合约类型是不需要指定存储关键字的，因为他默认就是storage。</strong></p>
+<p>下面，我们用实际案例来演示，引用类型之间传参赋值到底是**引用传递(传递指针)**还是值拷贝？</p>
+<p><strong>总结</strong>：相同类型之间的赋值是引用传递，其余都是值拷贝。其中<strong>sotrage 到 storage 的赋值是值拷贝</strong></p>
+<p>以下是引用传递</p>
+<p>1、memory和memory之间的赋值是引用传递。</p>
+<p>2、storage和local storage之间的赋值是引用传递。</p>
+<p>以下是值拷贝</p>
+<p>1、storage和memory之间的赋值是值拷贝，反过来memory赋值给storage是不行的！</p>
+<p><strong>2、sotrage 到 storage 的赋值是值拷贝</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract memorytest&#123;</span><br><span class="line">    uint public a ;</span><br><span class="line">    uint256[] public b ;</span><br><span class="line">    uint256[] public c ;</span><br><span class="line">    </span><br><span class="line">    //情况1：值类型的都是值拷贝</span><br><span class="line">    function add1(uint t) private&#123;</span><br><span class="line">        // 对t的修改不会影响到a</span><br><span class="line">        a = t; </span><br><span class="line">        t = 3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAdd1() public &#123;</span><br><span class="line">        add1(2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //情况2：memory和memory之间的赋值是引用</span><br><span class="line">    function add2(uint256[] memory t) private&#123;</span><br><span class="line">        b = t;</span><br><span class="line">        // 对t的修改不会影响到b，但是会影响到temp</span><br><span class="line">        t[0] = 999;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAdd2() public returns(uint256[] memory temp ) &#123;</span><br><span class="line">        uint256[] memory temp = new uint256[](3);</span><br><span class="line">        temp[0] = 100;</span><br><span class="line">        temp[1] = 200;</span><br><span class="line">        temp[1] = 300;</span><br><span class="line">        add2(temp);</span><br><span class="line">        return temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 情况3： storage和storage之间的赋值是引用传递</span><br><span class="line">    function add3(uint256[] storage cc) private&#123;</span><br><span class="line">        uint256[] storage tt;</span><br><span class="line">        tt = cc; //对tt的操作会影响到c</span><br><span class="line">        tt[0]= 222; </span><br><span class="line"></span><br><span class="line">        //把tt赋值给b storage和sotrage之间的赋值</span><br><span class="line">        b = tt; </span><br><span class="line">        b[0] = 333; //对b的改变是否会对tt改变是否会影响c的值？ c[0]是333 还是222？</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    function testAdd3() public &#123;</span><br><span class="line">        c = new uint256[](3);</span><br><span class="line">        c[0] = 100;</span><br><span class="line">        c[1] = 200;</span><br><span class="line">        c[2] = 300;    </span><br><span class="line">        add3(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //情况4： sotrage和memory之间的赋值是值传递</span><br><span class="line">    function add4(uint256[] memory c) private&#123;</span><br><span class="line">        c[0] = 888;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAdd4() public &#123;</span><br><span class="line">        c = new uint256[](3);</span><br><span class="line">        c[0] = 100;</span><br><span class="line">        c[1] = 200;</span><br><span class="line">        c[2] = 300;   </span><br><span class="line">        add4(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //情况5： memory和storage之间是无法传递的</span><br><span class="line">    // function add5(uint256[] storage c) private&#123;</span><br><span class="line">    //     c[0] = 888;// 对c的修改 无法影响到cc</span><br><span class="line">    // &#125;</span><br><span class="line">    // function testAdd5() public returns(uint256[] memory cc) &#123;</span><br><span class="line">    //     uint256[] memory cc = new uint256[](3);</span><br><span class="line">    //     cc[0] = 100;</span><br><span class="line">    //     cc[1] = 200;</span><br><span class="line">    //     cc[2] = 300;   </span><br><span class="line">    //     add5(cc);</span><br><span class="line">    //     return cc;</span><br><span class="line">    // &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="六、如何省钱？-1"><a href="#六、如何省钱？-1" class="headerlink" title="六、如何省钱？"></a>六、如何省钱？</h3><p>花不花gas取决于两个层面，一是你有没有修改<strong>storage变量</strong>的状态？二是你函数调用有没有声明为pure或者view。两个条件都需要满足，否则你调用一次函数就会花一次钱。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 会花gas</span><br><span class="line">function iterateMapping(uint256 startIndex) public &#123;</span><br><span class="line">    for (uint256 i = startIndex; i &lt; endIndex; i++) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 不会花gas</span><br><span class="line">function iterateMapping2(uint256 startIndex) public view &#123;</span><br><span class="line">    uint256 endIndex2 = startIndex+ 10 ;</span><br><span class="line">    for (uint256 i = startIndex; i &lt; endIndex2; i++) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2023-5-12</p>
+<p>在solidity中，用户调用的你的函数花不花gas主要取决于两个条件，有没有修改状态和你的函数是不是pure和view函数。这两个条件必须同时满足时，用户调用你的函数才不会花gas，否则要花gas。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 会花gas</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">iterateMapping</span>(<span class="params">uint256 startIndex</span>) public &#123;</span><br><span class="line">      <span class="keyword">for</span> (uint256 i = startIndex; i &lt; endIndex; i++) &#123;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 不会花gas</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">iterateMapping2</span>(<span class="params">uint256 startIndex</span>) public view &#123;</span><br><span class="line">      uint256 endIndex2 = startIndex+ <span class="number">10</span> ;</span><br><span class="line">      <span class="keyword">for</span> (uint256 i = startIndex; i &lt; endIndex2; i++) &#123;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>那那些情况是属于修改状态呢？除了修改sotrage类型的变量是一定是修改状态外，以下几种情况也是会修改状态产生gas的。</p>
+<p>1、修改stroage状态变量</p>
+<p>2、发出事件 emit event</p>
+<p>3、创建合约、销毁合约selfdestruct</p>
+<p>4、支付send transfer操作</p>
+<p>那pure和view这两个有什么区别吗？这两个关键字在消耗gas层面上都是不花gas的，区别主要在于业务上。pure函数更多的是工具函数，用pure函数修饰的函数往往只是提供工具，它不进行读状态变量。而view函数主要用在我们的业务函数里，业务函数一般要对状态变量进行读取的。</p>
+<p>下面对pure和view这俩做一个对比，</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>状态读取</th>
+<th>状态修改</th>
+<th>用户调用是否花gas</th>
+<th>合约调用是否会花gas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>view</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>pure</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<p>本文转载自：<a target="_blank" rel="noopener" href="https://ouhuang.notion.site/solidity-2b5eeb3fe9c8472f85bc4628b1d6e1d9">https://ouhuang.notion.site/solidity-2b5eeb3fe9c8472f85bc4628b1d6e1d9</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/undefined.html" data-id="cm5kxt8o20024kku44nr7befd" data-title="solidity语言特性之数据类型" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/posts/66a907b1.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Gitlab-CICD最简单明了的入门教程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IC/">IC</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java8%E6%96%B0%E7%89%B9%E6%80%A7/">Java8新特性</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sonarquber/">Sonarquber</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/dfinity/">dfinity</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/gitlab-ci/">gitlab-ci</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/">表格处理</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/POI/" rel="tag">POI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dfinity/" rel="tag">dfinity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyexcel/" rel="tag">easyexcel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" rel="tag">表格处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/IC/" style="font-size: 20px;">IC</a> <a href="/tags/POI/" style="font-size: 13.33px;">POI</a> <a href="/tags/dfinity/" style="font-size: 10px;">dfinity</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/easyexcel/" style="font-size: 10px;">easyexcel</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 13.33px;">区块链</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" style="font-size: 10px;">知识面</a> <a href="/tags/%E8%A1%A8%E6%A0%BC%E5%A4%84%E7%90%86/" style="font-size: 13.33px;">表格处理</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/undefined.html">solidity语言特性之数据类型</a>
+          </li>
+        
+          <li>
+            <a href="/posts/66a907b1.html">Gitlab-CICD最简单明了的入门教程</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f73eb048.html">设计模式-拦截过滤器</a>
+          </li>
+        
+          <li>
+            <a href="/posts/fc25c4a4.html">IC中的账户及相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 mrxccc<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -73,6 +73,154 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-从服务化到云原生-配置" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/2fab00f3.html" class="article-date">
+  <time class="dt-published" datetime="2020-11-23T07:38:59.000Z" itemprop="datePublished">2020-11-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/2fab00f3.html">从服务化到云原生-配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>配置（Configguration）对于每个工程师来说都不陌生，相信没有哪个系统是不提供配置参数的。</p>
+<p>本文讲解由单机应用的本地配置向分布式应用的配置中心演进过程，以及配置中心的一些核心概念</p>
+<h2 id="1-本地配置"><a href="#1-本地配置" class="headerlink" title="1 本地配置"></a>1 本地配置</h2><p>在集中式系统架构的单机应用时代，配置大多数通过属性文件的形式存储以<code>Key=Value</code>的形态出现。当然也有使用XML或YAML等更加复杂的方式进行配置（比如Spring的配置文件application.xml）但开发工程师更倾向于将他们归类为代码部分，真正可以动态修改的配置应该是简单、易于理解的、易于修改的。</p>
+<p>在单机时代，配置文件就够用了。运维工程师如果想修改配置，登录生产机器，用VIM本文编辑，然后重启应用，或者用定时任务从新加载配置文件就可以生效。</p>
+<h2 id="2-配置集中化"><a href="#2-配置集中化" class="headerlink" title="2 配置集中化"></a>2 配置集中化</h2><p>服务器增加导致运维工作量增加，分布式系统很难使用本地配置。采用集中化的方式，也就是散落在每台服务器上运维操作集中于一点统一处理，然后程序通过远程通信或异步消息分发到各个服务器。对系统配置进行修改是运维工程师的重要工作之一，所以对配置进行统一管理是大势所趋。</p>
+<p><strong>本地配置存在的问题：</strong></p>
+<ul>
+<li>　配置工作量大；</li>
+<li>　配置修改遗漏，导致各个节点配置环境不一致；</li>
+<li>　各个节点配置不一致的时间差长（各个服务器操作时间不同）；</li>
+<li>　配置修改无法动态生效（定时重新加载或重启应用）；</li>
+<li>　直接修改配置文本信息产生错误难于校验；</li>
+</ul>
+<p><strong>配置中心能解决上述问题，还能提供额外的便利：</strong></p>
+<ul>
+<li>　配置工作量少，单点修改，全局生效；</li>
+<li>　配置修改不容易遗漏；</li>
+<li>　各个节点配置不一致的时间差比较短；</li>
+<li>　配置信息可以像业务数据一样被持久化保存，方便恢复，方便搭建环境，方便最终修改历史；</li>
+<li>多个系统上线时，配置检查、沟通协调容易；</li>
+<li>　配置信息放置于应用程序之外，更容易保持应用的无状态化，为容器化和微服务化部署方案提供了强有力的支持。</li>
+</ul>
+<h2 id="3-配置值中心和注册中心"><a href="#3-配置值中心和注册中心" class="headerlink" title="3 配置值中心和注册中心"></a>3 配置值中心和注册中心</h2><p>很多人认为配置中心和注册中心是可以相互替换的两个同义词，因为他们的使用场景非相似。另外，当前很多开源产品，如zookeeper、etcd等，都同时支持这两种场景，这也更加容易让人误以为他们就是同一事物。但事实上，他们还是有着本质区别的。</p>
+<p>注册中心与配置中心的关注点不完全相同。注册中心用于分布式系统的服务质量，多用于管理运行在当前集群中的服务的状态，需要随时进行动态更新。而配置中心则不然，它关注的是配置本身，相比于状态，配置是更加静态和具象的事物。配置的三个要素是快速传播、变更稀疏、环境相关</p>
+<blockquote>
+<p>快速传播：分布式场景下，各个服务节点都需要得到一致的数据，无论是配置还是状态，一旦发生改变往往要求集群中的所有节点同时感知变更</p>
+<p>变更稀疏：配置发生变更的情况非常少，因此配置中心对读性能进行优化，而对写要求稍低</p>
+<p>环境相关：一般耳熟能详的系统环境有开发环境、测试环境、线上环境，不同的环境对应着不同的配置，但注册中心所关注的应用程序的运行状态和环境是没有任何关系</p>
+</blockquote>
+<h3 id="3-1-读性能"><a href="#3-1-读性能" class="headerlink" title="3.1 读性能"></a>3.1 读性能</h3><p>采用配置中心方案后，就必须要考虑远程调用导致的性能下降和配置中心本身的单节点访问压力的问题</p>
+<p>解决方案：缓存。</p>
+<p>因为配置信息是可穷举的，不可能是海量的，所以一次性杯加载进本地缓存是非常方便的</p>
+<p>缓存分为位于配置中心的集中式缓存和位于应用端的本地缓存</p>
+<ul>
+<li><p><strong>集中式缓存</strong>：配置信息读远大于写。每次读取磁盘影响性能，缓存到内存。</p>
+<ul>
+<li>优点：能访问最新的数据，数据一致性好，提升访问效率；</li>
+<li>缺点：没有缓解配置中心的访问压力。</li>
+</ul>
+</li>
+<li><p><strong>本地缓存</strong>：客户端缓存，尽量访问本地，只有在配置发生变化的时候才读配置中心，更新缓存。</p>
+<ul>
+<li>优点：减少远程调用，提升访问效率，缓解了配置中心压力。</li>
+<li>缺点：数据存在多份，可能不一致。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>补充：</strong></p>
+<p>缓存击穿：缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时需要从数据库查询，查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到数据库去查询，造成缓存穿透。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞，缓存还有可能降低效率； </p>
+</blockquote>
+<h3 id="3-2-变更实时性"><a href="#3-2-变更实时性" class="headerlink" title="3.2 变更实时性"></a>3.2 变更实时性</h3><p>如果使用本地缓存，数据就会存在多个副本，配置中心数据发生变更时，如何将配置信息实时通知给应用客户端。</p>
+<p>一般有两种方式：<strong>监听</strong>和<strong>实时同步</strong></p>
+<ul>
+<li>监听：配置中心的客户端都需要与配置中心建立长连接。配置变化时，配置变化了，主动推送各个客户端，客户端更新缓存。<ul>
+<li>优点：实时性高；</li>
+<li>缺点： 长连接比较消耗系统资源。并且长连接一旦断了，还要从新连接，容错等。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>保持长连接有效的方法是：心跳监听服务，一旦发现连接不可用则销毁连接建立新连接。为了保证应用客户端能正确接收到信息变更请求，也需要让客户端给予反馈，不反馈就一直发。客户端要实现<strong>幂等性（在应答式通信系统中，可能存存在多发请求的情况； 比如kafka重复消费数据）</strong>。　</p>
+</blockquote>
+<ul>
+<li>实时同步：客户端主动定时去询问配置中心。如果发现缓存和配置中心不一致，就更新缓存。这样使用短连接就可以。</li>
+<li>优点：节省连接资源，降低服务中心的压力。</li>
+<li>缺点：间隔时间长，则配置更新不及时；间隔时间短，则配置中心压力过大，并且做很多无用功。</li>
+</ul>
+<blockquote>
+<p><strong>其他方法</strong>；设置缓存失效时间。　  </p>
+</blockquote>
+<h3 id="3-3-可用性"><a href="#3-3-可用性" class="headerlink" title="3.3 可用性"></a>3.3 可用性</h3><p>配置中心是整个分布式系统的核心，一旦配置中心不可用，整个系统将会受到极大影响</p>
+<p>那么如何提升配置中心的可用性呢？服务冗余、缓存</p>
+<ul>
+<li><p>服务冗余：做服务集群，数据备份</p>
+<ul>
+<li>1 基于主节点提供服务：主从模式，主节点提供服务，从节点冗余数据备份</li>
+<li>2 基于对等节点提供服务：节点对等，在访问量非常大的情况下可以有效分流（但对于配置中心，有点小题大做）</li>
+</ul>
+</li>
+<li><p>缓存：也是服务冗余的一种，但只是冗余数据，而不是整个服务</p>
+<ul>
+<li>优点：提升读取配置信息的性能，可以在配置中心节点全失效时提供应急使用，也叫离线模式。</li>
+<li>缺点：缓存更新不了了。</li>
+</ul>
+</li>
+</ul>
+<p>　</p>
+<h3 id="3-4-数据一致性"><a href="#3-4-数据一致性" class="headerlink" title="3.4 数据一致性"></a>3.4 数据一致性</h3><p>分布式架构下，数据一致性如何保证</p>
+<p><strong>一致性三种方案</strong>：</p>
+<ul>
+<li><p><strong>ACID（</strong>强一致性）</p>
+</li>
+<li><p><strong>BASE</strong>：BASE是<strong>Basically Available(基本可用，</strong>响应时间上有损失，功能有损失<strong>）</strong>、<strong>Soft state(软状态，</strong>软状态是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同的数据副本之间进行数据同步的过程存在延时<strong>）</strong>和<strong>Eventually consistent(最终一致性，</strong>最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状<strong>）</strong>三个短语的简写。 其核心思  想是即使无法做到强一致性，但每个应用都可以根据自身的业务特点，采用适当的方法来使系统达到<strong>最终一致性。</strong>最终一致性是一种特殊的弱一致性：系统能够保证在没有其他新的更新操作的情况下，数据最终一定能够达到一致的状态，因此所有客户端对系统的数据访问都能够获取到最新的值。同时，在没有发生故障的前提下，数据到达一致状态的时间延迟，取决于网络延迟、系统负载和数据复制方案设计等因素。</p>
+</li>
+<li><p><strong>状态机</strong>：状态机是表示实体的状态根据条件转移的数学模型。通过状态机模型，系统可以判断当前不一致状态，以及如何校正不一致状态到一致状态；</p>
+</li>
+<li><p>基于状态机的数据一致性算法是：ZAB和Raft</p>
+</li>
+<li><p>成熟的产品有zookeeper（基于ZAB算法）；etcd（基于Raft算法）和Consul(基于Raft算法)</p>
+</li>
+</ul>
+<p>那么配置中心选择哪种方案更加合适呢？</p>
+<p>配置中心并不需要ACID的事物，也不会有类似于关系型数据库那一复杂跨表的关联操作；对于BASE的最终一致性的柔性事物场景而言，一致性状态没有时间的保证，因此也不适合用于处理相对敏感的配置信息；通过状态机保证数据一致性的处理方式，无论是在一致性还是性能上，都更加适合配置中心。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/2fab00f3.html" data-id="cm5kxt8o9002tkku41gzi9j32" data-title="从服务化到云原生-配置" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-设计模式-抽象工厂模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/posts/5a86ebac.html" class="article-date">
@@ -188,7 +336,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/5a86ebac.html" data-id="cm49oxvyr003j4wu4384p2kv5" data-title="设计模式-抽象工厂模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/5a86ebac.html" data-id="cm5kxt8oi003kkku4d2htagoq" data-title="设计模式-抽象工厂模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -304,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/52649bb.html" data-id="cm49oxvxt000v4wu45o4m088q" data-title="Gitlab Runner的安装与配置" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/52649bb.html" data-id="cm5kxt8nk000skku49j3d6ziu" data-title="Gitlab Runner的安装与配置" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -389,7 +537,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/7a7080f.html" data-id="cm49oxvxu000w4wu4gbat71w8" data-title="Gitlab-runner的容器化安装与使用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/7a7080f.html" data-id="cm5kxt8nm000wkku4c284gx4j" data-title="Gitlab-runner的容器化安装与使用" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -472,7 +620,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/186d0ab9.html" data-id="cm49oxvxq000o4wu4gja85t5h" data-title="docker系列-docker远程访问" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/186d0ab9.html" data-id="cm5kxt8ne000gkku4dz2ogz66" data-title="docker系列-docker远程访问" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -590,7 +738,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/4d3646a8.html" data-id="cm49oxvyc00284wu4bmbh2ng5" data-title="docker系列-docker.sock探究" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/4d3646a8.html" data-id="cm5kxt8o4002bkku44rc40ox6" data-title="docker系列-docker.sock探究" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -705,7 +853,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/89a20157.html" data-id="cm49oxvyp003d4wu4givp2vvw" data-title="设计模式-工厂方法模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/89a20157.html" data-id="cm5kxt8og003dkku4cb4f373u" data-title="设计模式-工厂方法模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -803,7 +951,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/e7ea293c.html" data-id="cm49oxvxo000n4wu45qfq8tzt" data-title="Docker系列-容器的相关操作" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/e7ea293c.html" data-id="cm5kxt8ng000mkku43jyx41sw" data-title="Docker系列-容器的相关操作" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -894,7 +1042,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/cf1c7a25.html" data-id="cm49oxvxr000r4wu4485w7hzc" data-title="Docker系列-镜像的相关操作" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/cf1c7a25.html" data-id="cm5kxt8nj000rkku4adek73g2" data-title="Docker系列-镜像的相关操作" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -1008,158 +1156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/e4de3745.html" data-id="cm49oxvxn000i4wu4bepjflt0" data-title="Docker系列-docker的三个基本概念" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-同步容器与JUC并发容器的对比与介绍" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/posts/933755ce.html" class="article-date">
-  <time class="dt-published" datetime="2019-08-10T01:23:20.000Z" itemprop="datePublished">2019-08-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/spring/">spring</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/posts/933755ce.html">同步容器与JUC并发容器的对比与介绍</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="1-容器集简单介绍"><a href="#1-容器集简单介绍" class="headerlink" title="1 容器集简单介绍"></a>1 容器集简单介绍</h1><p>java.util包下面的容器集主要有两种，一种是Collection接口下面的List和Set，一种是Map,<br>大致结构如下： </p>
-<ul>
-<li><p>Collection  </p>
-<ul>
-<li>List  <ul>
-<li>LinkedList</li>
-<li>ArrayList</li>
-<li>Vector<ul>
-<li>Stack</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Set  <ul>
-<li>HashSet</li>
-<li>TreeSet</li>
-<li>LinkedSet</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Map  </p>
-<ul>
-<li>Hashtable</li>
-<li>HashMap</li>
-<li>WeakHashMap</li>
-</ul>
-</li>
-</ul>
-<h1 id="2-同步容器"><a href="#2-同步容器" class="headerlink" title="2 同步容器"></a>2 同步容器</h1><p>同步容器也叫线程安全容器，是通过<strong>syncrhoized关键字</strong>对线程不安全的操作进行加锁来保证线程安全的<br>其中同步容器主要包括:<br>1.Vector、Stack、HashTable<br>2.Collections 工具类中提供的同步集合类<br>Collections类是一个工具类，相当于Arrays类对于Array的支持，Collections类中提供了大量对集合或者容器进行排序、查找的方法。它还提供了几个静态方法来创建同步容器类：</p>
-<h1 id="3-并发容器"><a href="#3-并发容器" class="headerlink" title="3 并发容器"></a>3 并发容器</h1><p>java.util.concurrent提供了多种线程安全容器，大多数是使用系统底层技术实现的线程安全，也叫并发容器，类似native。Java8中使用CAS。</p>
-<h1 id="4-案例讲解"><a href="#4-案例讲解" class="headerlink" title="4 案例讲解"></a>4 案例讲解</h1><p>这里主要介绍一些常见的同步容器和并发容器，通过案例输出结果对比进行介绍<br>我大致分为了三类Map&#x2F;Set,List,Queue来进行讲解,但一个Map&#x2F;Set，只介绍了Map,因为在java的设计中，Set就是Map，说白了就是只有Key没有Value的Map，好了，现在开始进入正题</p>
-<h2 id="4-1-Map-Set"><a href="#4-1-Map-Set" class="headerlink" title="4.1 Map&#x2F;Set"></a>4.1 Map&#x2F;Set</h2><p>代码中new了三个Map,HashTable，ConcurrentHashMap，ConcurrentSkipListMap比较每个map的运行效率，起100个线程向map中存放10000条随机数，并通过门闩CountDownLatch控制运行状态，输出运行时间</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - ConcurrentMap</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Hashtable;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentSkipListMap;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_01_ConcurrentMap</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">final</span> Map&lt;String, String&gt; map = <span class="keyword">new</span> <span class="title class_">Hashtable</span>&lt;&gt;();</span><br><span class="line">		<span class="comment">// final Map&lt;String, String&gt; map = new ConcurrentHashMap&lt;&gt;();</span></span><br><span class="line">		<span class="comment">// final Map&lt;String, String&gt; map = new ConcurrentSkipListMap&lt;&gt;();</span></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Random</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">		Thread[] array = <span class="keyword">new</span> <span class="title class_">Thread</span>[<span class="number">100</span>];</span><br><span class="line">		<span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(array.length);</span><br><span class="line">		</span><br><span class="line">		<span class="type">long</span> <span class="variable">begin</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; array.length; i++)&#123;</span><br><span class="line">			array[i] = <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">					<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">10000</span>; j++)&#123;</span><br><span class="line">						map.put(<span class="string">&quot;key&quot;</span>+r.nextInt(<span class="number">100000000</span>), <span class="string">&quot;value&quot;</span>+r.nextInt(<span class="number">100000</span>));</span><br><span class="line">					&#125;</span><br><span class="line">					latch.countDown();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(Thread t : array)&#123;</span><br><span class="line">			t.start();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			latch.await();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">		System.out.println(<span class="string">&quot;执行时间为 ： &quot;</span> + (end-begin) + <span class="string">&quot;毫秒！&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>Hashtable结果：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmNTQxZGQ1MDlkMDA"></p>
-<p>ConcurrentHashMap结果：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmNDU3MGMxZWFhODY"></p>
-<p>ConcurrentSkipListMap结果:</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmNTg3ZmIyYjZiZmI"></p>
-<p>ConcurrentHashMap的底层是哈希实现的同步Map(Set)<br>ConcurrentSkipListMap内部是SkipList（跳表）结构实现的非阻塞读&#x2F;写&#x2F;删除 的 Map，它的value是有序存储的, 而且其内部是由纵横链表组成，在JDK1.8中，ConcurrentHashMap的性能和存储空间要优于ConcurrentSkipListMap</p>
-<p>为了让测试数据结果对比更加直观，我这里故意将生成的随机数调的比较大。这里需要注意一下，在测试的时候，如果机器性能比较好，可能结果会出现误差，因为System.currentTimeMillis()，这个方法调用了个native方法，获取的时间精度会依赖于操作系统的实现机制，具体为什么，可以看看这篇文章<a target="_blank" rel="noopener" href="http://blog.sina.com.cn/s/blog_6b8bd9d80101fe8t.html%E3%80%82%E4%BD%86%E6%88%91%E6%8C%89%E7%85%A7%E6%96%87%E6%A1%A3%E7%9A%84%E5%8A%9E%E6%B3%95%E5%B0%86System.currentTimeMillis()%E6%94%B9%E4%B8%BASystem.nanoTime()%EF%BC%8C%E5%8F%91%E7%8E%B0%E5%B9%B6%E6%B2%A1%E6%9C%89%E8%A7%A3%E5%86%B3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%EF%BC%8C%E5%8F%AF%E8%83%BD%E6%98%AF%E5%9B%A0%E4%B8%BA%E5%B9%B6%E6%B2%A1%E6%9C%89%E8%BE%BE%E5%88%B0%E7%BA%B3%E7%A7%92%E7%BA%A7%E5%88%AB%E5%90%A7%E3%80%82">http://blog.sina.com.cn/s/blog_6b8bd9d80101fe8t.html。但我按照文档的办法将System.currentTimeMillis()改为System.nanoTime()，发现并没有解决这个问题，可能是因为并没有达到纳秒级别吧。</a></p>
-<h2 id="4-2-List"><a href="#4-2-List" class="headerlink" title="4.2 List"></a>4.2 List</h2><p>下面代码与4.1的代码类似，也是new了三个List,ArrayList，Vector，CopyOnWriteArrayList，起100个线程向map中存放1000条随机数，并通过门闩CountDownLatch控制运行状态，输出运行时间和最后list的的长度。<strong>由于ArrayList是线程不安全，在多线程执行的时候，需要try{}catch{},否则会因为数组越界而报错，因为ArrayList底层是一个长度动态扩展的数组</strong>  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - CopyOnWriteList</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> java.util.Vector;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CopyOnWriteArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_02_CopyOnWriteList</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		 <span class="keyword">final</span> List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;(); <span class="comment">// 线程不安全</span></span><br><span class="line"><span class="comment">//		 final List&lt;String&gt; list = new Vector&lt;&gt;(); // 线程安全</span></span><br><span class="line"><span class="comment">//		final List&lt;String&gt; list = new CopyOnWriteArrayList&lt;&gt;(); // 线程安全</span></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Random</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">		Thread[] array = <span class="keyword">new</span> <span class="title class_">Thread</span>[<span class="number">100</span>];</span><br><span class="line">		<span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(array.length);</span><br><span class="line">		</span><br><span class="line">		<span class="type">long</span> <span class="variable">begin</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; array.length; i++)&#123;</span><br><span class="line">			array[i] = <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">					<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++)&#123;</span><br><span class="line">						<span class="keyword">try</span> &#123;</span><br><span class="line">							list.add(<span class="string">&quot;value&quot;</span> + r.nextInt(<span class="number">100000</span>));</span><br><span class="line">						&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">					latch.countDown();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(Thread t : array)&#123;</span><br><span class="line">			t.start();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			latch.await();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">		System.out.println(<span class="string">&quot;执行时间为 ： &quot;</span> + (end-begin) + <span class="string">&quot;毫秒！&quot;</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;List.size() : &quot;</span> + list.size());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>ArrayList结果：<strong>因为ArrayList是线程不安全的，所以在多线程环境中，可能会丢失数据</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmODE2MmFmYjA4NDQ"></p>
-<p>Vector结果：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmODNkYWRhNmYzYjc"></p>
-<p>CopyOnWriteArrayList结果：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmODQ0ZmVhNmI1Yjc"></p>
-<p>CopyOnWriteArrayList是读写分离的，写时复制出一个新的数组，完成插入、修改或者移除操作后将新数组赋值给array，读取时直接读取最新的数组，所以在写操作时，效率非常低（虽然写比较慢，但它在删除数组头和尾还是很快的）<br>从上面三个结果可以看出,CopyOnWriteArrayList虽然保证了线程安全，但它的写操作效率太低了，但相比Vector，并发安全且性能比Vector好，Vector是增删改查方法都加了synchronized，保证同步，但是每个方法执行的时候都要去获得锁，性能就会大大下降，而CopyOnWriteArrayList 只是在增删改上加锁，<strong>但是读不加锁，在读方面的性能就好于Vector，CopyOnWriteArrayList支持读多写少的并发情况</strong>，所以CopyOnWriteArrayList是不会存在脏读问题的</p>
-<h2 id="4-3-Queue"><a href="#4-3-Queue" class="headerlink" title="4.3 Queue"></a>4.3 Queue</h2><p>常用阻塞队列</p>
-<ul>
-<li>ArrayBlockingQueue: 一个数组结构组成的有界阻塞队列，按照先进先出原则，要求设定初始大小</li>
-<li>LinkedBlockingQueue: 一个由链表结构组成的有界队列，按照先进先出的原则，可以不设置初始大小，默认为Integer.Max_Value(0x7fffffff)<blockquote>
-<p>ArrayBlockingQueue只有一个锁，LinkedBlockingQueue用了两个锁</p>
-</blockquote>
-</li>
-<li>PriorityBlockingQueue:一个支持优先级排序的无界阻塞队列，默认按照自然顺序，要么实现compareTo()方法，指定构造方法Comparator</li>
-<li>DelayQueue: 一个使用优先级队列实现的无界阻塞队列</li>
-<li>SynchronousQueue: 一个不存储元素的阻塞队列</li>
-<li>LinkedTransferQueue：一个又链表结构组成的无界阻塞队列</li>
-<li>LinkedBlockDeque:一个由链表结构组成的双向阻塞队列，可以从队列的头和尾部插入和移除元素，实现工作的密取</li>
-</ul>
-<h3 id="4-3-1-ConcurrentLinkedQueue"><a href="#4-3-1-ConcurrentLinkedQueue" class="headerlink" title="4.3.1 ConcurrentLinkedQueue"></a>4.3.1 ConcurrentLinkedQueue</h3><p>基础链表同步队列</p>
-<blockquote>
-<p><strong>peek() -&gt; 查看queue中的首数据</strong><br><strong>poll() -&gt; 获取queue中的首数据</strong></p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - ConcurrentLinkedQueue</span></span><br><span class="line"><span class="comment"> *  队列 - 链表实现的。 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Queue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentLinkedQueue;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_03_ConcurrentLinkedQueue</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		Queue&lt;String&gt; queue = <span class="keyword">new</span> <span class="title class_">ConcurrentLinkedQueue</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">		<span class="comment">//向队列中增加10个数据</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">			queue.offer(<span class="string">&quot;value&quot;</span> + i);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(queue);</span><br><span class="line">		System.out.println(queue.size());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// peek() -&gt; 查看queue中的首数据，</span></span><br><span class="line">		System.out.println(<span class="string">&quot;首数据 &quot;</span> + queue.peek());</span><br><span class="line">		System.out.println(<span class="string">&quot;队列长度 &quot;</span>+ queue.size());</span><br><span class="line">		System.out.println(<span class="string">&quot;===================&quot;</span>);</span><br><span class="line">		<span class="comment">// poll() -&gt; 获取queue中的首数据</span></span><br><span class="line">		System.out.println(<span class="string">&quot;首数据 &quot;</span> + queue.peek());</span><br><span class="line">		System.out.println(<span class="string">&quot;队列长度 &quot;</span>+ queue.size());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>结果：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmOTUwNjA2NjgzZDY"></p>
-<h3 id="4-3-2-阻塞队列LinkedBlockingQueue"><a href="#4-3-2-阻塞队列LinkedBlockingQueue" class="headerlink" title="4.3.2 阻塞队列LinkedBlockingQueue"></a>4.3.2 阻塞队列LinkedBlockingQueue</h3><p>阻塞队列，队列容量不足自动阻塞，队列容量为0自动阻塞。</p>
-<blockquote>
-<p> <strong>put &amp; take - 自动阻塞</strong><br> <strong>put自动阻塞， 队列容量满后，自动阻塞</strong><br> <strong>take自动阻塞方法， 队列容量为0后，自动阻塞</strong></p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - LinkedBlockingQueue</span></span><br><span class="line"><span class="comment"> *  阻塞容器。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.BlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.LinkedBlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_04_LinkedBlockingQueue</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">final</span> BlockingQueue&lt;String&gt; queue = <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;&gt;();</span><br><span class="line">	<span class="keyword">final</span> <span class="type">Random</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">final</span> <span class="type">Test_04_LinkedBlockingQueue</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test_04_LinkedBlockingQueue</span>();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">				<span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">					<span class="keyword">try</span> &#123;</span><br><span class="line">						t.queue.put(<span class="string">&quot;value&quot;</span>+t.r.nextInt(<span class="number">1000</span>));</span><br><span class="line">						TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">					&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;, <span class="string">&quot;producer&quot;</span>).start();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)&#123;</span><br><span class="line">			<span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">					<span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">						<span class="keyword">try</span> &#123;</span><br><span class="line">							System.out.println(Thread.currentThread().getName() + </span><br><span class="line">									<span class="string">&quot; - &quot;</span> + t.queue.take());</span><br><span class="line">						&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">							e.printStackTrace();</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;, <span class="string">&quot;consumer&quot;</span>+i).start();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>结果：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmOWM3MzA5NmM4ZDY"><br>结果就是一个简单的生产者消费者</p>
-<h3 id="4-3-3-BlockingQueue"><a href="#4-3-3-BlockingQueue" class="headerlink" title="4.3.3 BlockingQueue"></a>4.3.3 BlockingQueue</h3><p><strong>底层数组实现的有界队列，当容量不足的时候，有阻塞能力，根据调用API（add&#x2F;put&#x2F;offer）不同，有不同特性</strong><br>这里主要介绍三个api方法add，put，offer  </p>
-<ul>
-<li>add方法在容量不足的时候，抛出异常。  </li>
-<li>put方法在容量不足的时候，阻塞等待。  </li>
-<li>offer方法<blockquote>
-<p>单参数offer方法，不阻塞。容量不足的时候，返回false。当前新增数据操作放弃。<br>三参数offer方法（offer(value,times,timeunit)），容量不足的时候，阻塞times时长（单位为timeunit），如果在阻塞时长内，有容量空闲，新增数据返回true。如果阻塞时长范围内，无容量空闲，放弃新增数据，返回false。</p>
-</blockquote>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - ArrayBlockingQueue</span></span><br><span class="line"><span class="comment"> *  有界容器。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.BlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_05_ArrayBlockingQueue</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">final</span> BlockingQueue&lt;String&gt; queue = <span class="keyword">new</span> <span class="title class_">ArrayBlockingQueue</span>&lt;&gt;(<span class="number">3</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">final</span> <span class="type">Test_05_ArrayBlockingQueue</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test_05_ArrayBlockingQueue</span>();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 1.add method</span></span><br><span class="line">			System.out.println(<span class="string">&quot;add method : &quot;</span> + t.queue.add(<span class="string">&quot;value&quot;</span>+i));</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 2.put method</span></span><br><span class="line"><span class="comment">//			try &#123;</span></span><br><span class="line"><span class="comment">//				t.queue.put(&quot;put&quot;+i);</span></span><br><span class="line"><span class="comment">//			&#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">//				e.printStackTrace();</span></span><br><span class="line"><span class="comment">//			&#125;</span></span><br><span class="line"><span class="comment">//			System.out.println(&quot;put method : &quot; + i);</span></span><br><span class="line"></span><br><span class="line">			<span class="comment">// 3.offer method</span></span><br><span class="line"><span class="comment">//			System.out.println(&quot;offer method : &quot; + t.queue.offer(&quot;value&quot;+i));</span></span><br><span class="line"><span class="comment">//			try &#123;</span></span><br><span class="line"><span class="comment">//				System.out.println(&quot;offer method : &quot; +</span></span><br><span class="line"><span class="comment">//							t.queue.offer(&quot;value&quot;+i, 1, TimeUnit.SECONDS));</span></span><br><span class="line"><span class="comment">//			&#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">//				e.printStackTrace();</span></span><br><span class="line"><span class="comment">//			&#125;</span></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(t.queue);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>add方法结果：<strong>容量不足的时候，抛出异常</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmYTUxMDU2NDY5MTg"></p>
-<p>put方法结果：<strong>容量不足的时候，阻塞等待</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmYTVhZjYxZGRjZjc"></p>
-<p>单&#x2F;多参数offer方法结果：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmYWIyZTc3MmUzNTM"><br>单参数offer：<strong>容量不足，直接返回结果，不阻塞</strong><br>多参数offer：<strong>容量不足，阻塞</strong></p>
-<h3 id="4-3-4-延时队列DelayQueue"><a href="#4-3-4-延时队列DelayQueue" class="headerlink" title="4.3.4 延时队列DelayQueue"></a>4.3.4 延时队列DelayQueue</h3><p>延时队列。根据比较机制，实现自定义处理顺序的队列。常用于定时任务。<br>如：定时关机。<br>具体示例代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - DelayQueue</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.BlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.DelayQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Delayed;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_06_DelayQueue</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> BlockingQueue&lt;MyTask_06&gt; queue = <span class="keyword">new</span> <span class="title class_">DelayQueue</span>&lt;&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">		<span class="type">long</span> <span class="variable">value</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">		<span class="type">MyTask_06</span> <span class="variable">task1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask_06</span>(value + <span class="number">2000</span>);</span><br><span class="line">		<span class="type">MyTask_06</span> <span class="variable">task2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask_06</span>(value + <span class="number">1000</span>);</span><br><span class="line">		<span class="type">MyTask_06</span> <span class="variable">task3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask_06</span>(value + <span class="number">3000</span>);</span><br><span class="line">		<span class="type">MyTask_06</span> <span class="variable">task4</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask_06</span>(value + <span class="number">2500</span>);</span><br><span class="line">		<span class="type">MyTask_06</span> <span class="variable">task5</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask_06</span>(value + <span class="number">1500</span>);</span><br><span class="line">		</span><br><span class="line">		queue.put(task1);</span><br><span class="line">		queue.put(task2);</span><br><span class="line">		queue.put(task3);</span><br><span class="line">		queue.put(task4);</span><br><span class="line">		queue.put(task5);</span><br><span class="line">		</span><br><span class="line">		System.out.println(queue);</span><br><span class="line">		System.out.println(value);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">			System.out.println(queue.take());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTask_06</span> <span class="keyword">implements</span> <span class="title class_">Delayed</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="type">long</span> compareValue;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">MyTask_06</span><span class="params">(<span class="type">long</span> compareValue)</span>&#123;</span><br><span class="line">		<span class="built_in">this</span>.compareValue = compareValue;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 比较大小。自动实现升序</span></span><br><span class="line"><span class="comment">	 * 建议和getDelay方法配合完成。</span></span><br><span class="line"><span class="comment">	 * 如果在DelayQueue是需要按时间完成的计划任务，必须配合getDelay方法完成。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">compareTo</span><span class="params">(Delayed o)</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> (<span class="type">int</span>)(<span class="built_in">this</span>.getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获取计划时长的方法。</span></span><br><span class="line"><span class="comment">	 * 根据参数TimeUnit来决定，如何返回结果值。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getDelay</span><span class="params">(TimeUnit unit)</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> unit.convert(compareValue - System.currentTimeMillis(), TimeUnit.MILLISECONDS);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;Task compare value is : &quot;</span> + <span class="built_in">this</span>.compareValue;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmZGIyMTQxODY4ODI"></p>
-<h3 id="4-3-5-转移队列LinkedTransferQueue"><a href="#4-3-5-转移队列LinkedTransferQueue" class="headerlink" title="4.3.5 转移队列LinkedTransferQueue"></a>4.3.5 转移队列LinkedTransferQueue</h3><p>这里主要是两个方法的区别，add和transfer  </p>
-<ul>
-<li>add - 队列会保存数据，不做阻塞等待。</li>
-<li>transfer - 是TransferQueue的特有方法。必须有消费者（take()方法的调用者）。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - LinkedTransferQueue</span></span><br><span class="line"><span class="comment"> *  转移队列</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.LinkedTransferQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TransferQueue;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_07_TransferQueue</span> &#123;</span><br><span class="line">	</span><br><span class="line">	TransferQueue&lt;String&gt; queue = <span class="keyword">new</span> <span class="title class_">LinkedTransferQueue</span>&lt;&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">final</span> <span class="type">Test_07_TransferQueue</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test_07_TransferQueue</span>();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">/*new Thread(new Runnable() &#123;</span></span><br><span class="line"><span class="comment">			@Override</span></span><br><span class="line"><span class="comment">			public void run() &#123;</span></span><br><span class="line"><span class="comment">				try &#123;</span></span><br><span class="line"><span class="comment">					System.out.println(Thread.currentThread().getName() + &quot; thread begin &quot; );</span></span><br><span class="line"><span class="comment">					System.out.println(Thread.currentThread().getName() + &quot; - &quot; + t.queue.take());</span></span><br><span class="line"><span class="comment">				&#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">					e.printStackTrace();</span></span><br><span class="line"><span class="comment">				&#125;</span></span><br><span class="line"><span class="comment">			&#125;</span></span><br><span class="line"><span class="comment">		&#125;, &quot;output thread&quot;).start();</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">		try &#123;</span></span><br><span class="line"><span class="comment">			TimeUnit.SECONDS.sleep(2);</span></span><br><span class="line"><span class="comment">		&#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">			e.printStackTrace();</span></span><br><span class="line"><span class="comment">		&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">		try &#123;</span></span><br><span class="line"><span class="comment">			t.queue.transfer(&quot;test string&quot;);</span></span><br><span class="line"><span class="comment">		&#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">			e.printStackTrace();</span></span><br><span class="line"><span class="comment">		&#125;*/</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					t.queue.transfer(<span class="string">&quot;test string&quot;</span>);</span><br><span class="line">					<span class="comment">// t.queue.add(&quot;test string&quot;);</span></span><br><span class="line">					System.out.println(<span class="string">&quot;add ok&quot;</span>);</span><br><span class="line">				&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;).start();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			TimeUnit.SECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					System.out.println(Thread.currentThread().getName() + <span class="string">&quot; thread begin &quot;</span> );</span><br><span class="line">					System.out.println(Thread.currentThread().getName() + <span class="string">&quot; - &quot;</span> + t.queue.take());</span><br><span class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;, <span class="string">&quot;output thread&quot;</span>).start();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-这里的transfer()和take()都是阻塞方法，take先请求接收数据或者transfer先发送数据，都会进行阻塞等待。<br><strong>举个例子，transfer()就相当与手机打电话，当A给B打电话，B必须接收到电话信号接听才能进行通话，否则A会一直等待</strong><br><strong>add()就相当于A给B发短信，短信已经存到了运营商那边，等待B接收，不管发短信时B是否在线</strong></li>
-</ul>
-<h3 id="4-3-6-SynchronousQueue"><a href="#4-3-6-SynchronousQueue" class="headerlink" title="4.3.6 SynchronousQueue"></a>4.3.6 SynchronousQueue</h3><p>该队列一个容量为0的队列，是一个特殊的TransferQueue，它和TransferQueue很像，但这个队列必须要有消费线程才行<br>又两个方法add,put<br>add方法，无阻塞。若没有消费线程阻塞等待数据，则抛出异常。<br>put方法，有阻塞。若没有消费线程阻塞等待数据，则阻塞。  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并发容器 - SynchronousQueue</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.bernardlowe.concurrent.t06;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.BlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.SynchronousQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test_08_SynchronusQueue</span> &#123;</span><br><span class="line">	</span><br><span class="line">	BlockingQueue&lt;String&gt; queue = <span class="keyword">new</span> <span class="title class_">SynchronousQueue</span>&lt;&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">final</span> <span class="type">Test_08_SynchronusQueue</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test_08_SynchronusQueue</span>();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					System.out.println(Thread.currentThread().getName() + <span class="string">&quot; thread begin &quot;</span> );</span><br><span class="line">					<span class="keyword">try</span> &#123;</span><br><span class="line">						TimeUnit.SECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">					&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">					System.out.println(Thread.currentThread().getName() + <span class="string">&quot; - &quot;</span> + t.queue.take());</span><br><span class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;, <span class="string">&quot;output thread&quot;</span>).start();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">/*try &#123;</span></span><br><span class="line"><span class="comment">			TimeUnit.SECONDS.sleep(3);</span></span><br><span class="line"><span class="comment">		&#125; catch (InterruptedException e) &#123;</span></span><br><span class="line"><span class="comment">			e.printStackTrace();</span></span><br><span class="line"><span class="comment">		&#125;*/</span></span><br><span class="line">		<span class="comment">// t.queue.add(&quot;test add&quot;);</span></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			t.queue.put(<span class="string">&quot;test put&quot;</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(Thread.currentThread().getName() + <span class="string">&quot; queue size : &quot;</span> + t.queue.size());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>将<code>t.queue.add(&quot;test add&quot;);</code>的注释打开，<code>t.queue.put(&quot;test put&quot;);</code>加上注释<br>add方法异常结果： <strong>因为它是一个容量为0的队列</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS83LzE3LzE2YmZmZjNmMzY4ZTQwMzA"></p>
-<p>更多精彩内容：<a href="https://mrxccc.github.io/">mrxccc</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/933755ce.html" data-id="cm49oxvyk002z4wu44obpce9o" data-title="同步容器与JUC并发容器的对比与介绍" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/e4de3745.html" data-id="cm5kxt8nh000nkku43kvy82h2" data-title="Docker系列-docker的三个基本概念" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -1215,7 +1212,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
     </div>
   </div>
 
@@ -1226,6 +1223,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/posts/undefined.html">solidity语言特性之数据类型</a>
+          </li>
         
           <li>
             <a href="/posts/66a907b1.html">Gitlab-CICD最简单明了的入门教程</a>
@@ -1243,10 +1244,6 @@
             <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
           </li>
         
-          <li>
-            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -1260,7 +1257,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       
-      &copy; 2024 mrxccc<br>
+      &copy; 2025 mrxccc<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

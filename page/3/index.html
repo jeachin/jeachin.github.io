@@ -73,6 +73,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Java8新特性-Optional类" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/posts/91010686.html" class="article-date">
+  <time class="dt-published" datetime="2020-12-08T08:30:50.000Z" itemprop="datePublished">2020-12-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/posts/91010686.html">Java8新特性-Optional类</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Optional<T> 类(java.util.Optional) 是一个<code>容器类</code>，代表一个值存在或不存在，原来用 null 表示一个值不存在，现在 Optional 可以更好的表达这个概念。并且可以避免空指针异常。</p>
+<p>常用方法：</p>
+<ul>
+<li>Optional.of(T t) : 创建一个 Optional 实例</li>
+<li>Optional.empty() : 创建一个空的 Optional 实例</li>
+<li>Optional.ofNullable(T t):若 t 不为 null,创建 Optional 实例,否则创建空实例</li>
+<li>isPresent() : 判断是否包含值</li>
+<li>orElse(T t) :  如果调用对象包含值，返回该值，否则返回t</li>
+<li>orElseGet(Supplier s) :如果调用对象包含值，返回该值，否则返回 s 获取的值</li>
+<li>map(Function f): 如果有值对其处理，并返回处理后的Optional，否则返回 Optional.empty()</li>
+<li>flatMap(Function mapper):与 map 类似，要求返回值必须是Optional</li>
+</ul>
+<h3 id="1-of方法"><a href="#1-of方法" class="headerlink" title="1.of方法"></a>1.of方法</h3><p><strong>创建一个 Optional 实例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test1</span><span class="params">()</span>&#123;</span><br><span class="line">	Optional&lt;Employee&gt; op = Optional.of(<span class="keyword">new</span> <span class="title class_">Employee</span>());</span><br><span class="line">	<span class="type">Employee</span> <span class="variable">emp</span> <span class="operator">=</span> op.get();</span><br><span class="line">	System.out.println(emp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-ofNullable-empty"><a href="#2-ofNullable-empty" class="headerlink" title="2.ofNullable &amp; empty"></a>2.ofNullable &amp; empty</h3><p><strong>若 t 不为 null,创建 Optional 实例,否则创建空实例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test2</span><span class="params">()</span>&#123;</span><br><span class="line">    Optional&lt;Employee&gt; op = Optional.ofNullable(<span class="literal">null</span>);</span><br><span class="line">    <span class="keyword">if</span>(op.isPresent())&#123;</span><br><span class="line">        System.out.println(op.get());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    System.out.println(op.get());</span><br><span class="line"></span><br><span class="line">    Optional&lt;Employee&gt; op = Optional.empty();</span><br><span class="line">    System.out.println(op.get());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-orElse-orElseGet"><a href="#3-orElse-orElseGet" class="headerlink" title="3.orElse &amp; orElseGet"></a>3.orElse &amp; orElseGet</h3><ul>
+<li>orElse(T t) :  如果调用对象包含值，返回该值，否则返回t</li>
+<li>orElseGet(Supplier s) :如果调用对象包含值，返回该值，否则返回 s 获取的值</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test3</span><span class="params">()</span>&#123;</span><br><span class="line">    Optional&lt;Employee&gt; op = Optional.ofNullable(<span class="keyword">new</span> <span class="title class_">Employee</span>());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(op.isPresent())&#123;</span><br><span class="line">        System.out.println(op.get());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">Employee</span> <span class="variable">emp</span> <span class="operator">=</span> op.orElse(<span class="keyword">new</span> <span class="title class_">Employee</span>(<span class="string">&quot;张三&quot;</span>));</span><br><span class="line">    System.out.println(emp);</span><br><span class="line"></span><br><span class="line">    <span class="type">Employee</span> <span class="variable">emp2</span> <span class="operator">=</span> op.orElseGet(() -&gt; <span class="keyword">new</span> <span class="title class_">Employee</span>());</span><br><span class="line">    System.out.println(emp2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-map-flatMap"><a href="#4-map-flatMap" class="headerlink" title="4.map &amp; flatMap"></a>4.map &amp; flatMap</h3><ul>
+<li>map(Function f): 如果有值对其处理，并返回处理后的Optional，否则返回 Optional.empty()</li>
+<li>flatMap(Function mapper):与 map 类似，要求返回值必须是Optional</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test4</span><span class="params">()</span>&#123;</span><br><span class="line">    Optional&lt;Employee&gt; op = Optional.of(<span class="keyword">new</span> <span class="title class_">Employee</span>(<span class="number">101</span>, <span class="string">&quot;张三&quot;</span>, <span class="number">18</span>, <span class="number">9999.99</span>));</span><br><span class="line"></span><br><span class="line">    Optional&lt;String&gt; op2 = op.map(Employee::getName);</span><br><span class="line">    System.out.println(op2.get());</span><br><span class="line"></span><br><span class="line">    Optional&lt;String&gt; op3 = op.flatMap((e) -&gt; Optional.of(e.getName()));</span><br><span class="line">    System.out.println(op3.get());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://mrxccc.github.io/posts/91010686.html" data-id="cm5kxt8nr0019kku47br16puw" data-title="Java8新特性-Optional类" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Java8新特性-Stream API" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/posts/7dc48150.html" class="article-date">
@@ -218,7 +285,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/7dc48150.html" data-id="cm49oxvy0001b4wu4bqqae36g" data-title="Java8新特性-Stream API" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/7dc48150.html" data-id="cm5kxt8nu001gkku4glfy9yhp" data-title="Java8新特性-Stream API" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -297,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/90336839.html" data-id="cm49oxvy3001k4wu4d5ae6h5f" data-title="Java8新特性-方法引用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/90336839.html" data-id="cm5kxt8nw001okku426gdc2xo" data-title="Java8新特性-方法引用" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -381,7 +448,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/7ab34660.html" data-id="cm49oxvy2001g4wu40hyj1iy1" data-title="Java8新特性-四大核心函数式接口" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/7ab34660.html" data-id="cm5kxt8nt001ekku4e6ly97ua" data-title="Java8新特性-四大核心函数式接口" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -463,7 +530,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/1486d886.html" data-id="cm49oxvxz00194wu473q4avs5" data-title="Java8新特性-Lambda表达式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/1486d886.html" data-id="cm5kxt8nq0016kku494hs1vx2" data-title="Java8新特性-Lambda表达式" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -520,7 +587,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/2381e15b.html" data-id="cm49oxvxh000b4wu4g9s6g5pf" data-title="Docker系列-docker-compose安装" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/2381e15b.html" data-id="cm5kxt8na000bkku479jte2xu" data-title="Docker系列-docker-compose安装" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -589,7 +656,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/d3280453.html" data-id="cm49oxvxl000g4wu4490r9et0" data-title="Docker系列-docker安装" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/d3280453.html" data-id="cm5kxt8nd000ekku44aibcibt" data-title="Docker系列-docker安装" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -655,7 +722,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/96b8b724.html" data-id="cm49oxvye002d4wu4hwtt2ux4" data-title="Sonarquber-docker安装教程" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/96b8b724.html" data-id="cm5kxt8o5002fkku4hnyr0lk9" data-title="Sonarquber-docker安装教程" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -795,7 +862,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/fa6e99b2.html" data-id="cm49oxvyo00384wu4565dbiff" data-title="设计模式-单例模式介绍+8种实现方式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/fa6e99b2.html" data-id="cm5kxt8oe0038kku4c0ltdnky" data-title="设计模式-单例模式介绍+8种实现方式" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -963,159 +1030,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/2a48474d.html" data-id="cm49oxvyq003f4wu42vvg15ha" data-title="设计模式-建造者模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://mrxccc.github.io/posts/2a48474d.html" data-id="cm5kxt8oh003hkku4gys1b7hf" data-title="设计模式-建造者模式" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-从服务化到云原生-配置" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/posts/2fab00f3.html" class="article-date">
-  <time class="dt-published" datetime="2020-11-23T07:38:59.000Z" itemprop="datePublished">2020-11-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%8C%96%E5%88%B0%E4%BA%91%E5%8E%9F%E7%94%9F/">从服务化到云原生</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/posts/2fab00f3.html">从服务化到云原生-配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>配置（Configguration）对于每个工程师来说都不陌生，相信没有哪个系统是不提供配置参数的。</p>
-<p>本文讲解由单机应用的本地配置向分布式应用的配置中心演进过程，以及配置中心的一些核心概念</p>
-<h2 id="1-本地配置"><a href="#1-本地配置" class="headerlink" title="1 本地配置"></a>1 本地配置</h2><p>在集中式系统架构的单机应用时代，配置大多数通过属性文件的形式存储以<code>Key=Value</code>的形态出现。当然也有使用XML或YAML等更加复杂的方式进行配置（比如Spring的配置文件application.xml）但开发工程师更倾向于将他们归类为代码部分，真正可以动态修改的配置应该是简单、易于理解的、易于修改的。</p>
-<p>在单机时代，配置文件就够用了。运维工程师如果想修改配置，登录生产机器，用VIM本文编辑，然后重启应用，或者用定时任务从新加载配置文件就可以生效。</p>
-<h2 id="2-配置集中化"><a href="#2-配置集中化" class="headerlink" title="2 配置集中化"></a>2 配置集中化</h2><p>服务器增加导致运维工作量增加，分布式系统很难使用本地配置。采用集中化的方式，也就是散落在每台服务器上运维操作集中于一点统一处理，然后程序通过远程通信或异步消息分发到各个服务器。对系统配置进行修改是运维工程师的重要工作之一，所以对配置进行统一管理是大势所趋。</p>
-<p><strong>本地配置存在的问题：</strong></p>
-<ul>
-<li>　配置工作量大；</li>
-<li>　配置修改遗漏，导致各个节点配置环境不一致；</li>
-<li>　各个节点配置不一致的时间差长（各个服务器操作时间不同）；</li>
-<li>　配置修改无法动态生效（定时重新加载或重启应用）；</li>
-<li>　直接修改配置文本信息产生错误难于校验；</li>
-</ul>
-<p><strong>配置中心能解决上述问题，还能提供额外的便利：</strong></p>
-<ul>
-<li>　配置工作量少，单点修改，全局生效；</li>
-<li>　配置修改不容易遗漏；</li>
-<li>　各个节点配置不一致的时间差比较短；</li>
-<li>　配置信息可以像业务数据一样被持久化保存，方便恢复，方便搭建环境，方便最终修改历史；</li>
-<li>多个系统上线时，配置检查、沟通协调容易；</li>
-<li>　配置信息放置于应用程序之外，更容易保持应用的无状态化，为容器化和微服务化部署方案提供了强有力的支持。</li>
-</ul>
-<h2 id="3-配置值中心和注册中心"><a href="#3-配置值中心和注册中心" class="headerlink" title="3 配置值中心和注册中心"></a>3 配置值中心和注册中心</h2><p>很多人认为配置中心和注册中心是可以相互替换的两个同义词，因为他们的使用场景非相似。另外，当前很多开源产品，如zookeeper、etcd等，都同时支持这两种场景，这也更加容易让人误以为他们就是同一事物。但事实上，他们还是有着本质区别的。</p>
-<p>注册中心与配置中心的关注点不完全相同。注册中心用于分布式系统的服务质量，多用于管理运行在当前集群中的服务的状态，需要随时进行动态更新。而配置中心则不然，它关注的是配置本身，相比于状态，配置是更加静态和具象的事物。配置的三个要素是快速传播、变更稀疏、环境相关</p>
-<blockquote>
-<p>快速传播：分布式场景下，各个服务节点都需要得到一致的数据，无论是配置还是状态，一旦发生改变往往要求集群中的所有节点同时感知变更</p>
-<p>变更稀疏：配置发生变更的情况非常少，因此配置中心对读性能进行优化，而对写要求稍低</p>
-<p>环境相关：一般耳熟能详的系统环境有开发环境、测试环境、线上环境，不同的环境对应着不同的配置，但注册中心所关注的应用程序的运行状态和环境是没有任何关系</p>
-</blockquote>
-<h3 id="3-1-读性能"><a href="#3-1-读性能" class="headerlink" title="3.1 读性能"></a>3.1 读性能</h3><p>采用配置中心方案后，就必须要考虑远程调用导致的性能下降和配置中心本身的单节点访问压力的问题</p>
-<p>解决方案：缓存。</p>
-<p>因为配置信息是可穷举的，不可能是海量的，所以一次性杯加载进本地缓存是非常方便的</p>
-<p>缓存分为位于配置中心的集中式缓存和位于应用端的本地缓存</p>
-<ul>
-<li><p><strong>集中式缓存</strong>：配置信息读远大于写。每次读取磁盘影响性能，缓存到内存。</p>
-<ul>
-<li>优点：能访问最新的数据，数据一致性好，提升访问效率；</li>
-<li>缺点：没有缓解配置中心的访问压力。</li>
-</ul>
-</li>
-<li><p><strong>本地缓存</strong>：客户端缓存，尽量访问本地，只有在配置发生变化的时候才读配置中心，更新缓存。</p>
-<ul>
-<li>优点：减少远程调用，提升访问效率，缓解了配置中心压力。</li>
-<li>缺点：数据存在多份，可能不一致。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p><strong>补充：</strong></p>
-<p>缓存击穿：缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时需要从数据库查询，查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到数据库去查询，造成缓存穿透。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞，缓存还有可能降低效率； </p>
-</blockquote>
-<h3 id="3-2-变更实时性"><a href="#3-2-变更实时性" class="headerlink" title="3.2 变更实时性"></a>3.2 变更实时性</h3><p>如果使用本地缓存，数据就会存在多个副本，配置中心数据发生变更时，如何将配置信息实时通知给应用客户端。</p>
-<p>一般有两种方式：<strong>监听</strong>和<strong>实时同步</strong></p>
-<ul>
-<li>监听：配置中心的客户端都需要与配置中心建立长连接。配置变化时，配置变化了，主动推送各个客户端，客户端更新缓存。<ul>
-<li>优点：实时性高；</li>
-<li>缺点： 长连接比较消耗系统资源。并且长连接一旦断了，还要从新连接，容错等。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>保持长连接有效的方法是：心跳监听服务，一旦发现连接不可用则销毁连接建立新连接。为了保证应用客户端能正确接收到信息变更请求，也需要让客户端给予反馈，不反馈就一直发。客户端要实现<strong>幂等性（在应答式通信系统中，可能存存在多发请求的情况； 比如kafka重复消费数据）</strong>。　</p>
-</blockquote>
-<ul>
-<li>实时同步：客户端主动定时去询问配置中心。如果发现缓存和配置中心不一致，就更新缓存。这样使用短连接就可以。</li>
-<li>优点：节省连接资源，降低服务中心的压力。</li>
-<li>缺点：间隔时间长，则配置更新不及时；间隔时间短，则配置中心压力过大，并且做很多无用功。</li>
-</ul>
-<blockquote>
-<p><strong>其他方法</strong>；设置缓存失效时间。　  </p>
-</blockquote>
-<h3 id="3-3-可用性"><a href="#3-3-可用性" class="headerlink" title="3.3 可用性"></a>3.3 可用性</h3><p>配置中心是整个分布式系统的核心，一旦配置中心不可用，整个系统将会受到极大影响</p>
-<p>那么如何提升配置中心的可用性呢？服务冗余、缓存</p>
-<ul>
-<li><p>服务冗余：做服务集群，数据备份</p>
-<ul>
-<li>1 基于主节点提供服务：主从模式，主节点提供服务，从节点冗余数据备份</li>
-<li>2 基于对等节点提供服务：节点对等，在访问量非常大的情况下可以有效分流（但对于配置中心，有点小题大做）</li>
-</ul>
-</li>
-<li><p>缓存：也是服务冗余的一种，但只是冗余数据，而不是整个服务</p>
-<ul>
-<li>优点：提升读取配置信息的性能，可以在配置中心节点全失效时提供应急使用，也叫离线模式。</li>
-<li>缺点：缓存更新不了了。</li>
-</ul>
-</li>
-</ul>
-<p>　</p>
-<h3 id="3-4-数据一致性"><a href="#3-4-数据一致性" class="headerlink" title="3.4 数据一致性"></a>3.4 数据一致性</h3><p>分布式架构下，数据一致性如何保证</p>
-<p><strong>一致性三种方案</strong>：</p>
-<ul>
-<li><p><strong>ACID（</strong>强一致性）</p>
-</li>
-<li><p><strong>BASE</strong>：BASE是<strong>Basically Available(基本可用，</strong>响应时间上有损失，功能有损失<strong>）</strong>、<strong>Soft state(软状态，</strong>软状态是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同的数据副本之间进行数据同步的过程存在延时<strong>）</strong>和<strong>Eventually consistent(最终一致性，</strong>最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状<strong>）</strong>三个短语的简写。 其核心思  想是即使无法做到强一致性，但每个应用都可以根据自身的业务特点，采用适当的方法来使系统达到<strong>最终一致性。</strong>最终一致性是一种特殊的弱一致性：系统能够保证在没有其他新的更新操作的情况下，数据最终一定能够达到一致的状态，因此所有客户端对系统的数据访问都能够获取到最新的值。同时，在没有发生故障的前提下，数据到达一致状态的时间延迟，取决于网络延迟、系统负载和数据复制方案设计等因素。</p>
-</li>
-<li><p><strong>状态机</strong>：状态机是表示实体的状态根据条件转移的数学模型。通过状态机模型，系统可以判断当前不一致状态，以及如何校正不一致状态到一致状态；</p>
-</li>
-<li><p>基于状态机的数据一致性算法是：ZAB和Raft</p>
-</li>
-<li><p>成熟的产品有zookeeper（基于ZAB算法）；etcd（基于Raft算法）和Consul(基于Raft算法)</p>
-</li>
-</ul>
-<p>那么配置中心选择哪种方案更加合适呢？</p>
-<p>配置中心并不需要ACID的事物，也不会有类似于关系型数据库那一复杂跨表的关联操作；对于BASE的最终一致性的柔性事物场景而言，一致性状态没有时间的保证，因此也不适合用于处理相对敏感的配置信息；通过状态机保证数据一致性的处理方式，无论是在一致性还是性能上，都更加适合配置中心。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://mrxccc.github.io/posts/2fab00f3.html" data-id="cm49oxvyh002o4wu4feb49wse" data-title="从服务化到云原生-配置" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%9F%A5%E8%AF%86%E9%9D%A2/" rel="tag">知识面</a></li></ul>
 
     </footer>
   </div>
@@ -1169,7 +1088,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">十一月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">九月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li></ul>
     </div>
   </div>
 
@@ -1180,6 +1099,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/posts/undefined.html">solidity语言特性之数据类型</a>
+          </li>
         
           <li>
             <a href="/posts/66a907b1.html">Gitlab-CICD最简单明了的入门教程</a>
@@ -1197,10 +1120,6 @@
             <a href="/posts/f78d4d0c.html">IC上出色的基础设施（持续更新）</a>
           </li>
         
-          <li>
-            <a href="/posts/9f2c049f.html">IC 入门课第二课</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -1214,7 +1133,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       
-      &copy; 2024 mrxccc<br>
+      &copy; 2025 mrxccc<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
